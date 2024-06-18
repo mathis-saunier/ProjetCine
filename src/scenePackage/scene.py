@@ -1,5 +1,5 @@
 # A faire : Changer le nom de interieurExterieur
-
+# On faire ajouter du typage de variable dans les déclarations : https://docs.python.org/fr/3.10/library/typing.html
 
 class Scene:
     idScene = None
@@ -32,9 +32,24 @@ class Scene:
         # Initialisation des donnees de narration
         self.voies = voies
         self.actes = actes
+        
+    # La surchage de constructeurs en python est impossible et l'on doit donc utiliser d'autres méthodes
+    # Pour ma part, je vais utiliser le décorateur @classmethod qui me permettra d'appeler une méthode de classe
+    # qui fera l'instanciation à ma place (ce sera ma "surchage de __init__")
+    # Lien vers le site d'où vient la solution https://www.delftstack.com/fr/howto/python/overload-constructors-in-python/
+    @classmethod
+    # Le premier élément cls fait référence à la classe elle-même (un peu comme le self de ce que j'ai compris)
+    def constructeurParDonnees(cls, idScene, donneesDescription, donneesContenu, donneesNarration):
+        return Scene(idScene,
+                     donneesDescription.lieu,
+                     donneesDescription.personnages,
+                     donneesDescription.interieurExterieur,
+                     donneesContenu.urlTexte,
+                     donneesNarration.voies,
+                     donneesNarration.actes)
 
     def __str__(self):
-        res = "idScene :" + str(self.idScene) + "\nDonnees description :\n " + "lieu : " + self.lieu + ", personnages : " + str(self.personnages) + ", interieurExterieur : " + str(self.interieurExterieur) + "\nDonnees contenu :\n urlTexte : " + self.urlTexte + "\nDonnees narration :\n voies" + str(self.voies) + ", actes : " + str(self.actes)
+        res = "idScene :" + str(self.idScene) + "\nDonnees description :\n " + "lieu : " + self.lieu + ", personnages : " + str(self.personnages) + ", interieurExterieur : " + str(self.interieurExterieur) + "\nDonnees contenu :\n urlTexte : " + self.urlTexte + "\nDonnees narration :\n voies : " + str(self.voies) + ", actes : " + str(self.actes)
 
         return res
         
