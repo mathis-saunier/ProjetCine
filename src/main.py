@@ -18,14 +18,13 @@ def initialisationScene(numScene):
         
     return sc.Scene(numScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes)
 
-def testSecondConstructeur():
-    scene = initialisationScene(0)
-    dd = sc.DonneesDescription("lieu0", ["homme0", "femme0"] , True)
-    dc = sc.DonneesContenu("urlTexteScene0")
-    dn = sc.DonneesNarration(["A"], [1])
-    sceneBis = sc.Scene.constructeurParDonnees(0, dd, dc ,dn)
-    print(str(scene))
-    print(str(sceneBis))
-    return (str(scene) == str(sceneBis))
+# def testSecondConstructeur():
+#     scene = initialisationScene(0)
+#     dd = sc.DonneesDescription("lieu0", ["homme0", "femme0"] , True)
+#     dc = sc.DonneesContenu("urlTexteScene0")
+#     dn = sc.DonneesNarration(["A"], [1])
+#     sceneBis = sc.Scene.constructeurParDonnees(0, dd, dc ,dn)
+#     return (str(scene) == str(sceneBis))
 
-print(testSecondConstructeur())
+scene0 = initialisationScene(0)
+scene0Bis = initialisationScene(0)

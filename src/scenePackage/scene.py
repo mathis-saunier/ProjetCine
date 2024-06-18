@@ -1,4 +1,6 @@
 # A faire : Changer le nom de interieurExterieur
+# A faire : lire le cours sur les paquets et faire ça proprement
+# A faire : lire le cours sur les exceptions et faire ça proprement
 # On faire ajouter du typage de variable dans les déclarations : https://docs.python.org/fr/3.10/library/typing.html
 
 class Scene:
@@ -17,7 +19,9 @@ class Scene:
     
     
     def __init__(self, idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes):
-        # Faire une exception pour gerer la création d'une scene avec un ID deja existant
+        # Faire une exception propre pour gerer la création d'une scene avec un ID deja existant
+        if self.sceneDejaExistante(idScene):
+            print("PROBLEME : l'id '"+str(idScene) + "' existe déjà pour une scène")
         self.idScene = idScene
         Scene.scenesExistantes.append(self)
         
@@ -38,8 +42,7 @@ class Scene:
     # qui fera l'instanciation à ma place (ce sera ma "surchage de __init__")
     # Lien vers le site d'où vient la solution https://www.delftstack.com/fr/howto/python/overload-constructors-in-python/
     @classmethod
-    # Le premier élément cls fait référence à la classe elle-même (un peu comme le self de ce que j'ai compris)
-    def constructeurParDonnees(cls, idScene, donneesDescription, donneesContenu, donneesNarration):
+    def constructeurParDonnees(self, idScene, donneesDescription, donneesContenu, donneesNarration):
         return Scene(idScene,
                      donneesDescription.lieu,
                      donneesDescription.personnages,
@@ -52,6 +55,12 @@ class Scene:
         res = "idScene :" + str(self.idScene) + "\nDonnees description :\n " + "lieu : " + self.lieu + ", personnages : " + str(self.personnages) + ", interieurExterieur : " + str(self.interieurExterieur) + "\nDonnees contenu :\n urlTexte : " + self.urlTexte + "\nDonnees narration :\n voies : " + str(self.voies) + ", actes : " + str(self.actes)
 
         return res
+    
+    def sceneDejaExistante(self, idScene):
+        for scene in Scene.scenesExistantes:
+            if (idScene == scene.idScene):
+                return True
+        return False
         
 
 
