@@ -1,4 +1,8 @@
+# A faire : lire le cours sur les exceptions et faire ça proprement
+# On faire ajouter du typage de variable dans les déclarations : https://docs.python.org/fr/3.10/library/typing.html
+
 import scenePackage as sc
+import filmPackage as fi
 
 def initialisationScene(numScene):
     idScene = numScene
@@ -26,5 +30,3 @@ def initialisationScene(numScene):
 #     sceneBis = sc.Scene.constructeurParDonnees(0, dd, dc ,dn)
 #     return (str(scene) == str(sceneBis))
 
-scene0 = initialisationScene(0)
-scene0Bis = initialisationScene(0)

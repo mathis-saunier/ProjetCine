@@ -1,8 +1,4 @@
 # A faire : Changer le nom de interieurExterieur
-# A faire : lire le cours sur les paquets et faire ça proprement
-# A faire : lire le cours sur les exceptions et faire ça proprement
-# On faire ajouter du typage de variable dans les déclarations : https://docs.python.org/fr/3.10/library/typing.html
-
 class Scene:
     idScene = None
     scenesExistantes = []
@@ -56,6 +52,7 @@ class Scene:
 
         return res
     
+    # A mettre en privé ?
     def sceneDejaExistante(self, idScene):
         for scene in Scene.scenesExistantes:
             if (idScene == scene.idScene):
