@@ -1,4 +1,4 @@
-from scenePackage import scene as sc
+import scenePackage as sc
 
 def initialisationScene(numScene):
     idScene = numScene

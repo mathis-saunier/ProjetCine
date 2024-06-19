@@ -62,36 +62,3 @@ class Scene:
                 return True
         return False
         
-
-
-
-# On met tous les attributs dans Scene mais il pourrait rester intéressant
-# de séparer par type de données et faire un autre constructeur de Scene avec
-# ces types de données 
-class DonneesDescription:
-    lieu = None
-    personnages = []
-    interieurExterieur = None
-    
-    def __init__(self, lieu, personnages, interieurExterieur):
-        self.lieu = lieu
-        self.personnages = personnages
-        self.interieurExterieur = interieurExterieur
-
-
-class DonneesContenu:
-    urlTexte = None
-
-    def __init__(self, urlTexte):
-        self.urlTexte = urlTexte
-        
-        
-class DonneesNarration:
-    voies = []
-    actes = []
-    
-    def __init__(self, voies, actes):
-        self.voies = voies
-        self.actes = actes
-
-    
