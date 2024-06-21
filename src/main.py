@@ -31,5 +31,9 @@ def testSecondConstructeur():
     sceneBis = sc.Scene.constructeurParDonnees(0, dd, dc ,dn)
     return (str(scene) == str(sceneBis))
 
-print(fi.Film("nomFilm"))
+scene0 = initialisationScene(0)
+# print(repr(scene0))
+scene0Bis = sc.Scene(0, 'lieu0', ['homme0', 'femme0'], True, 'urlTexteScene0', ['A'], [1])
+print(repr(scene0) == repr(scene0Bis))
+
 

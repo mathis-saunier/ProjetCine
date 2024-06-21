@@ -47,10 +47,8 @@ class Scene:
                      donneesNarration.voies,
                      donneesNarration.actes)
 
-    def __str__(self):
-        res = "idScene :" + str(self.idScene) + "\nDonnees description :\n " + "lieu : " + self.lieu + ", personnages : " + str(self.personnages) + ", interieurExterieur : " + str(self.interieurExterieur) + "\nDonnees contenu :\n urlTexte : " + self.urlTexte + "\nDonnees narration :\n voies : " + str(self.voies) + ", actes : " + str(self.actes)
-
-        return res
+    def __repr__(self):
+        return f"Scene({self.idScene}, '{self.lieu}', {str(self.personnages)}, {self.interieurExterieur}, '{self.urlTexte}', {str(self.voies)}, {str(self.actes)})"
     
     # A mettre en privé ?
     def sceneDejaExistante(self, idScene):
