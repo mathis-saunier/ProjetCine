@@ -4,6 +4,7 @@
 import scenePackage as sc
 import planPackage as pl
 import filmPackage as fi
+import conditionPackage as co
 
 def initialisationScene(numScene):
     idScene = numScene

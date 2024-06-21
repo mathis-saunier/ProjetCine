@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from .enumeration import ValeurCondition
+from .valeurCondition import ValeurCondition
 
 # Classe abstraite
 class Condition:

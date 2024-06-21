@@ -1,5 +1,5 @@
 from scenePackage.scene import Scene
-from scenePackage.condition import Condition
+from conditionPackage.condition import Condition
 
 class Film():
     nomFilm = None
