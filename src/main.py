@@ -34,6 +34,6 @@ def testSecondConstructeur():
 scene0 = initialisationScene(0)
 # print(repr(scene0))
 scene0Bis = sc.Scene(0, 'lieu0', ['homme0', 'femme0'], True, 'urlTexteScene0', ['A'], [1])
-print(repr(scene0) == repr(scene0Bis))
+print(scene0)
 
 

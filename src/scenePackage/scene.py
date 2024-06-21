@@ -47,6 +47,9 @@ class Scene:
                      donneesNarration.voies,
                      donneesNarration.actes)
 
+    def __str__(self):
+        return f"idScene : {self.idScene}"
+
     def __repr__(self):
         return f"Scene({self.idScene}, '{self.lieu}', {str(self.personnages)}, {self.interieurExterieur}, '{self.urlTexte}', {str(self.voies)}, {str(self.actes)})"
     
