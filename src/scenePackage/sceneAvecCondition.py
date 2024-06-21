@@ -18,4 +18,15 @@ class SceneAvecCondition(Scene):
                                   donneesNarration.voies,
                                   donneesNarration.actes,
                                   conditions)
+        
+    # Permet de vérifier que les conditions des scènes déjà ajoutées et de la scène actuelle ne
+    # menent pas a un ECHEC
+    def verifierToutesLesConditions(self, film):
+        conditionsAVerif = copy(film.scenes)
+        for c in self.conditions:
+            conditionsAVerif.append(c)
+        for c in conditionsAVerif:
+            if (c.verifierCondition(film) == ValeurCondition.ECHEC):
+                return ValeurCondition.ECHEC
+        return ValeurCondition.SUCCES
     

@@ -1,3 +1,1 @@
-from .film import Film
-
-__all__ = ["Film"]
+__all__ = ['film']
