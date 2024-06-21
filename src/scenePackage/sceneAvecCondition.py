@@ -19,6 +19,12 @@ class SceneAvecCondition(Scene):
                                   donneesNarration.actes,
                                   conditions)
         
+    # Fonction __str__ déjà définie par héritage
+    
+    def __repr__(self):
+        return f"Scene({self.idScene}, '{self.lieu}', {str(self.personnages)}, {self.interieurExterieur}, '{self.urlTexte}', {str(self.voies)}, {str(self.actes)}, {str(self.conditions)})"
+
+        
     # Permet de vérifier que les conditions des scènes déjà ajoutées et de la scène actuelle ne
     # menent pas a un ECHEC
     def verifierToutesLesConditions(self, film):
