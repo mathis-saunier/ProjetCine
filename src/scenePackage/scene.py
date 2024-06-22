@@ -59,4 +59,10 @@ class Scene:
             if (idScene == scene.idScene):
                 return True
         return False
+    
+    def obtenirSceneParId(self, id):
+        for s in Scene.scenesExistantes:
+            if (s.idScene == id):
+                return s
+        return None
         
