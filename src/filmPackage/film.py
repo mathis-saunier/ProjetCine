@@ -23,14 +23,19 @@ class Film():
             Condition.verifierConditions()
             
         
-    def recupererScenesPossibles(acteActuel, voieActuelle):
+    def recupererScenesPossibles(self, acteActuel, voieActuelle):
         scenesExistantes = copy(Scene.scenesExistantes)
         for s in scenesExistantes:
             if ((acteActuel not in s.actes) or (voieActuelle not in s.voies)):
                 scenesExistantes.remove(s)
         return scenesExistantes
         
-        
+    def recupererConditions(self):
+        res = []
+        for s in self.scenes:
+            for c in s.conditions:
+                res.append(c)
+        return res
         
         
         
