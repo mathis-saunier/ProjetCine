@@ -1,5 +1,6 @@
 from .condition import Condition
 from .valeurCondition import ValeurCondition
+from scenePackage.scene import Scene
 
 class ConditionSceneSuivante(Condition):
     idScenesSuivantesPossibles = []
@@ -12,7 +13,8 @@ class ConditionSceneSuivante(Condition):
             
     def verifierCondition(self, scene):
         idSceneAVerif = scene.idScene
-        for s in self.idScenesSuivantesPossibles:
+        for id in self.idScenesSuivantesPossibles:
+            s = Scene.obtenirSceneParId(id)
             if (s.idScene == idSceneAVerif):
                 return ValeurCondition.SUCCES
         return ValeurCondition.ECHEC

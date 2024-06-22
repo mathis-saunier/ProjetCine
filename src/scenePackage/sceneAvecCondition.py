@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 from .scene import Scene
+from conditionPackage import ValeurCondition
 
 class SceneAvecCondition(Scene):
     conditions = []
@@ -30,11 +31,8 @@ class SceneAvecCondition(Scene):
     # Permet de vérifier que les conditions des scènes déjà ajoutées et de la scène actuelle ne
     # menent pas a un ECHEC
     def verifierToutesConditions(self, film):
-        # On récupère les scènes déjà dans le film (copie profonde) puis leur conditions
-        
-        # A faire, une méthode récupérer les conditions d'un film pour remplacer la ligne en dessous qui est fausse
-        
-        conditionsAVerif = deepcopy(film.scenes)
+        # On récupère les conditions des scènes déjà dans le film
+        conditionsAVerif = film.recupererConditions()
         # On ajoute les conditions de cette scène
         for c in self.conditions:
             conditionsAVerif.append(c)

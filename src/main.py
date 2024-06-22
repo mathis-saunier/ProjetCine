@@ -35,7 +35,7 @@ def testSecondConstructeur():
 def testConditionSceneSuivante():
     conditionSS = co.ConditionSceneSuivante([0, 1])
     sDansFilm = sc.SceneAvecCondition(42, "", [], True, "", [], [],
-                                      co.ConditionSceneSuivante([0,1]))
+                                      [co.ConditionSceneSuivante([0,1])])
     s0 = sc.SceneAvecCondition(0, "", [], True, "", [], [],[])
     s1 = sc.SceneAvecCondition(1, "", [], True, "", [], [],[])
     s2 = sc.SceneAvecCondition(2, "", [], True, "", [], [],[])
