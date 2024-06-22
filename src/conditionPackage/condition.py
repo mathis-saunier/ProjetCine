@@ -15,5 +15,5 @@ class Condition:
     # Si la scene respecte toutes les conditions existantes et que les conditions de cette scène ne posent
     # pas non plus de problème alors SUCCES
     @abstractmethod
-    def verifierCondition(self, film):
+    def verifierCondition(self, scene):
         pass

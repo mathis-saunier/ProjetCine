@@ -32,9 +32,20 @@ def testSecondConstructeur():
     sceneBis = sc.Scene.constructeurParDonnees(0, dd, dc ,dn)
     return (str(scene) == str(sceneBis))
 
-scene0 = initialisationScene(0)
-# print(repr(scene0))
-scene0Bis = sc.SceneAvecCondition(1, 'lieu0', ['homme0', 'femme0'], True, 'urlTexteScene0', ['A'], [1], [])
-print(repr(scene0Bis))
+def testConditionSceneSuivante():
+    conditionSS = co.ConditionSceneSuivante([0, 1])
+    sDansFilm = sc.SceneAvecCondition(42, "", [], True, "", [], [],
+                                      co.ConditionSceneSuivante([0,1]))
+    s0 = sc.SceneAvecCondition(0, "", [], True, "", [], [],[])
+    s1 = sc.SceneAvecCondition(1, "", [], True, "", [], [],[])
+    s2 = sc.SceneAvecCondition(2, "", [], True, "", [], [],[])
+    film = fi.Film("FilmTest")
+    film.ajouterScene(sDansFilm)
+    print("Résultat attendu : SUCCES :")
+    print(s0.verifierToutesConditions(film))
+    print("Résultat attendu : SUCCES :")
+    print(s1.verifierToutesConditions(film))
+    print("Résultat attendu : ECHEC :")
+    print(s2.verifierToutesConditions(film))
 
-
+testConditionSceneSuivante()
