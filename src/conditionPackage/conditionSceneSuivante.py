@@ -2,17 +2,17 @@ from .condition import Condition
 from .valeurCondition import ValeurCondition
 
 class ConditionSceneSuivante(Condition):
-    scenesSuivantesPossibles = []
+    idScenesSuivantesPossibles = []
     
-    def __init__(self, scenesSuivantesPossibles):
-        if (type(scenesSuivantesPossibles) is list):
-            self.scenesSuivantesPossibles = scenesSuivantesPossibles
+    def __init__(self, idScenesSuivantesPossibles):
+        if (type(idScenesSuivantesPossibles) is list):
+            self.idScenesSuivantesPossibles = idScenesSuivantesPossibles
         else:
-            self.scenesSuivantesPossibles.append(scenesSuivantesPossibles)
+            self.idScenesSuivantesPossibles.append(idScenesSuivantesPossibles)
             
     def verifierCondition(self, scene):
         idSceneAVerif = scene.idScene
-        for s in self.scenesSuivantesPossibles:
+        for s in self.idScenesSuivantesPossibles:
             if (s.idScene == idSceneAVerif):
                 return ValeurCondition.SUCCES
         return ValeurCondition.ECHEC
