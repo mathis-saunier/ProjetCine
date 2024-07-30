@@ -40,7 +40,7 @@ class Film():
             choix = rd.randrange(0, len(scenesPossibles))
             sceneChoisie = scenesPossibles[choix]
             # Maintenant que l'on a une scene possible, on vérifie qu'elle respecte les conditions
-            if (sceneChoisie.verifierToutesLesConditions(self) == ValeurCondition.SUCCES):
+            if (sceneChoisie.verifierToutesLesConditionsPrecedentes(self) == ValeurCondition.SUCCES):
                 return sceneChoisie
             else:
                 scenesPossibles.remove(sceneChoisie)

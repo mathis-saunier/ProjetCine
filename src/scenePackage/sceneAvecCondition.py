@@ -26,15 +26,11 @@ class SceneAvecCondition(Scene):
         return f"Scene({self.idScene}, '{self.lieu}', {str(self.personnages)}, {self.interieurExterieur}, '{self.urlTexte}', {str(self.voies)}, {str(self.actes)}, {str(self.conditions)})"
 
         
-    # Permet de vérifier que les conditions des scènes déjà ajoutées et de la scène actuelle ne
+    # Verifie que les conditions des scenes deja ajoutees ne
     # menent pas a un ECHEC
-    def verifierToutesLesConditions(self, film):
+    def verifierToutesLesConditionsPrecedentes(self, film):
         # On récupère les conditions des scènes déjà dans le film
         conditionsAVerif = film.recupererConditions()
-        # Est-ce qu'il n'y aurait pas un pb
-        # # On ajoute les conditions de cette scène
-        # for c in self.conditions:
-        #     conditionsAVerif.append(c)
         # Pour chaque condition, on vérifie que la Scène que l'on souhaite ajouter retourne SUCCES
         for c in conditionsAVerif:
             if (c.verifierCondition(self) == ValeurCondition.ECHEC):
