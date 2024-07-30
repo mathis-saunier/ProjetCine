@@ -53,6 +53,10 @@ class Scene:
     def __repr__(self):
         return f"Scene({self.idScene}, '{self.lieu}', {str(self.personnages)}, {self.interieurExterieur}, '{self.urlTexte}', {str(self.voies)}, {str(self.actes)})"
     
+    def __eq__(self, other):
+        return self.idScene == other.idScene
+        
+    
     # A mettre en privé ?
     def sceneDejaExistante(self, idScene):
         for scene in Scene.scenesExistantes:
@@ -64,5 +68,6 @@ class Scene:
         for s in Scene.scenesExistantes:
             if (s.idScene == id):
                 return s
+        # Il FAUT faire une erreur sur le fait qu'il n'existe pas de scene
         return None
         

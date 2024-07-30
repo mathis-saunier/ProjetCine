@@ -1,5 +1,6 @@
 # A faire : lire le cours sur les exceptions et faire ça proprement
 # On faire ajouter du typage de variable dans les déclarations : https://docs.python.org/fr/3.10/library/typing.html
+from copy import deepcopy
 
 import scenePackage as sc
 import planPackage as pl
@@ -48,4 +49,45 @@ def testConditionSceneSuivante():
     print("Résultat attendu : ECHEC :")
     print(s2.verifierToutesConditions(film))
 
-testConditionSceneSuivante()
+film = fi.Film("nomFilm", "A")
+sDansFilm = sc.SceneAvecCondition(42, "", [], True, "", ["A"], [1],
+                                    [co.ConditionSceneSuivante([0,1])])
+sc.SceneAvecCondition(0, "", [], True, "", ["A"], [1],
+                                    [co.ConditionSceneSuivante([1])])
+sc.SceneAvecCondition(1, "", [], True, "", ["A"], [1],
+                                    [co.ConditionSceneSuivante([0])])
+print(f"{sc.Scene.scenesExistantes = }")
+# print(film.scenes)
+# print(sc.Scene.scenesExistantes)
+# print(film.scenes)
+# print(sc.Scene.scenesExistantes)
+# film.ajouterScene(film.tirerUneScene())
+# print(film.scenes)
+# print(sc.Scene.scenesExistantes)
+# print(film.tirerUneScene())
+
+
+# print(fi.Film.scenes)
+# film.tirerUneScene()
+# film.ajouterScene(sDansFilm)
+# print(fi.Film.scenes)
+# film.tirerUneScene()
+
+film.ajouterScene(sDansFilm)
+print("Film actuel : ")
+print(fi.Film.scenes)
+print()
+
+# print(f"{film.tirerUneScene() = }")
+
+# print("ok")
+
+film.ajouterScene(film.tirerUneScene())
+print("Film maintenant : ")
+print(fi.Film.scenes)
+print()
+
+film.ajouterScene(film.tirerUneScene())
+print("Film à la fin : ")
+print(fi.Film.scenes)
+print()

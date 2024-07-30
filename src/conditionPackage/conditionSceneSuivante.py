@@ -13,6 +13,8 @@ class ConditionSceneSuivante(Condition):
             
     def verifierCondition(self, scene):
         idSceneAVerif = scene.idScene
+        # il faut vérifier avant qu'il y a au moins une scene qui existe et qui est récupérable par obtenirSceneParId
+        # sinon ça retourne None (ou une exception) et s.idScene ne marche pas A REFLECHIR
         for id in self.idScenesSuivantesPossibles:
             s = Scene.obtenirSceneParId(id)
             if (s.idScene == idSceneAVerif):
