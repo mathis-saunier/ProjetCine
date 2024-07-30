@@ -1,4 +1,10 @@
 # A faire : Changer le nom de interieurExterieur
+
+class SceneInexistanteException(Exception):
+    def __init__(self, id):
+        self.id = id
+        super().__init__(f"Erreur, la scènes d'id {id} n'existe pas")
+
 class Scene:
     idScene = None
     scenesExistantes = []
@@ -68,6 +74,6 @@ class Scene:
         for s in Scene.scenesExistantes:
             if (s.idScene == id):
                 return s
-        # Il FAUT faire une erreur sur le fait qu'il n'existe pas de scene
-        return None
+        # Si l'on a pas trouvé de scene on lève une exception
+        raise SceneInexistanteException(id)
         

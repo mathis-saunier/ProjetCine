@@ -10,6 +10,7 @@ class ZeroSceneRestanteException(Exception):
         self.acte = acte
         self.voie = voie
         super().__init__(f"Erreur, il n'y a pas de scènes restantes dans l'acte {acte} pour la voie {voie}")
+        
 class Film():
     nomFilm = None
     scenes = []
