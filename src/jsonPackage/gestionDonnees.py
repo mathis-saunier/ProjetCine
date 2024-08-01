@@ -1,14 +1,48 @@
 import tkinter as tk
 from tkinter import ttk
 import json
+import os
 
 class SceneFormApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Formulaire de Scène")
 
+        self.scenes = []
+        self.file_name = ""
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
+
+        self.show_start_options()
+
+    def show_start_options(self):
+        self.clear_frame(self.main_frame)
+        tk.Label(self.main_frame, text="Nom du film:").grid(row=0, column=0, sticky=tk.W)
+        self.movie_name_entry = tk.Entry(self.main_frame)
+        self.movie_name_entry.grid(row=0, column=1, sticky=tk.W)
+
+        new_button = tk.Button(self.main_frame, text="Nouveau Film", command=self.new_movie)
+        new_button.grid(row=1, column=0, sticky=tk.W)
+
+        load_button = tk.Button(self.main_frame, text="Reprendre Film", command=self.load_movie)
+        load_button.grid(row=1, column=1, sticky=tk.W)
+
+    def new_movie(self):
+        self.file_name = self.movie_name_entry.get() + ".json"
+        self.show_scene_form()
+
+    def load_movie(self):
+        self.file_name = self.movie_name_entry.get() + ".json"
+        if os.path.exists(self.file_name):
+            with open(self.file_name, 'r') as file:
+                data = json.load(file)
+                self.scenes = data.get("scenes", [])
+            self.show_scene_form()
+        else:
+            tk.messagebox.showerror("Erreur", "Fichier non trouvé!")
+
+    def show_scene_form(self):
+        self.clear_frame(self.main_frame)
 
         self.canvas = tk.Canvas(self.main_frame)
         self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -151,37 +185,34 @@ class SceneFormApp:
         }
         
         conditions_data = self.get_conditions()
-        
-        self.show_submit_options(form_data, conditions_data)
 
-    def show_submit_options(self, form_data, conditions_data):
+        scene = {
+            "info": form_data,
+            "conditions": conditions_data
+        }
+        
+        self.scenes.append(scene)
+        self.show_submit_options()
+
+    def show_submit_options(self):
         options_window = tk.Toplevel(self.root)
         options_window.title("Options de soumission")
 
-        tk.Label(options_window, text="Nom du fichier (sans extension):").grid(row=0, column=0, sticky=tk.W)
-        self.filename_entry = tk.Entry(options_window)
-        self.filename_entry.grid(row=0, column=1, sticky=tk.W)
+        tk.Label(options_window, text="Souhaitez-vous ajouter une autre scène ou enregistrer le film?").grid(row=0, column=0, columnspan=2, sticky=tk.W)
 
-        print_button = tk.Button(options_window, text="Imprimer dans le terminal", command=lambda: self.print_data(form_data, conditions_data))
-        print_button.grid(row=1, column=0, sticky=tk.W)
+        new_scene_button = tk.Button(options_window, text="Ajouter une autre scène", command=lambda: [options_window.destroy(), self.clear_frame(self.main_frame), self.show_scene_form()])
+        new_scene_button.grid(row=1, column=0, sticky=tk.W)
 
-        save_button = tk.Button(options_window, text="Enregistrer en JSON", command=lambda: self.save_data_as_json(form_data, conditions_data))
+        save_button = tk.Button(options_window, text="Enregistrer le film", command=lambda: [self.save_movie(), options_window.destroy()])
         save_button.grid(row=1, column=1, sticky=tk.W)
 
-    def print_data(self, form_data, conditions_data):
-        print("Form Data:", form_data)
-        print("Conditions Data:", conditions_data)
-
-    def save_data_as_json(self, form_data, conditions_data):
-        filename = self.filename_entry.get()
-        if filename:
-            data = {
-                "form_data": form_data,
-                "conditions_data": conditions_data
-            }
-            with open(f"{filename}.json", "w") as f:
-                json.dump(data, f, indent=4)
-            print(f"Data saved to {filename}.json")
+    def save_movie(self):
+        data = {
+            "scenes": self.scenes
+        }
+        with open(self.file_name, "w") as f:
+            json.dump(data, f, indent=4)
+        print(f"Data saved to {self.file_name}")
 
     def get_conditions(self):
         conditions = []
@@ -195,6 +226,10 @@ class SceneFormApp:
                 other_text = next(widget.get() for widget in widgets if isinstance(widget, tk.Entry))
                 conditions.append({"type": condition_type, "other": other_text})
         return conditions
+
+    def clear_frame(self, frame):
+        for widget in frame.winfo_children():
+            widget.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()
