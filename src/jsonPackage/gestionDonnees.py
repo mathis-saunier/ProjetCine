@@ -1,72 +1,80 @@
-""" Ce fichier a pour but de rassembler les fonctions qui serviront
-au realisateur pour enregistrer les scenes qu'il veut mettre dans le programme """
-
-import json
-
-# Pour initier une scene on a besoin de ceci : idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes, conditions
-# Le tout sera stocke dans un format JSON
-
 import tkinter as tk
 from tkinter import ttk
+import json
 
 class SceneFormApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Formulaire de Scène")
 
+        self.main_frame = tk.Frame(self.root)
+        self.main_frame.pack(fill=tk.BOTH, expand=True)
+
+        self.canvas = tk.Canvas(self.main_frame)
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        self.scrollbar = ttk.Scrollbar(self.main_frame, orient=tk.VERTICAL, command=self.canvas.yview)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        self.canvas.bind('<Configure>', lambda e: self.canvas.configure(scrollregion=self.canvas.bbox('all')))
+
+        self.content_frame = tk.Frame(self.canvas)
+        self.canvas.create_window((0, 0), window=self.content_frame, anchor='nw')
+
         self.create_widgets()
 
     def create_widgets(self):
-        tk.Label(self.root, text="ID Scene").grid(row=0, column=0, sticky=tk.W)
-        self.id_scene_entry = tk.Entry(self.root)
+        tk.Label(self.content_frame, text="ID Scene").grid(row=0, column=0, sticky=tk.W)
+        self.id_scene_entry = tk.Entry(self.content_frame)
         self.id_scene_entry.grid(row=0, column=1, sticky=tk.W)
 
-        tk.Label(self.root, text="Lieu").grid(row=1, column=0, sticky=tk.W)
-        self.lieu_entry = tk.Entry(self.root)
+        tk.Label(self.content_frame, text="Lieu").grid(row=1, column=0, sticky=tk.W)
+        self.lieu_entry = tk.Entry(self.content_frame)
         self.lieu_entry.grid(row=1, column=1, sticky=tk.W)
 
-        tk.Label(self.root, text="Intérieur/Extérieur").grid(row=2, column=0, sticky=tk.W)
-        self.int_ext_entry = tk.Entry(self.root)
+        tk.Label(self.content_frame, text="Intérieur/Extérieur").grid(row=2, column=0, sticky=tk.W)
+        self.int_ext_entry = tk.Entry(self.content_frame)
         self.int_ext_entry.grid(row=2, column=1, sticky=tk.W)
 
-        tk.Label(self.root, text="URL Texte").grid(row=3, column=0, sticky=tk.W)
-        self.url_texte_entry = tk.Entry(self.root)
+        tk.Label(self.content_frame, text="URL Texte").grid(row=3, column=0, sticky=tk.W)
+        self.url_texte_entry = tk.Entry(self.content_frame)
         self.url_texte_entry.grid(row=3, column=1, sticky=tk.W)
 
         # Section pour les personnages
-        tk.Label(self.root, text="Personnages").grid(row=4, column=0, sticky=tk.W)
-        self.personnages_frame = tk.Frame(self.root)
+        tk.Label(self.content_frame, text="Personnages").grid(row=4, column=0, sticky=tk.W)
+        self.personnages_frame = tk.Frame(self.content_frame)
         self.personnages_frame.grid(row=4, column=1, sticky=tk.W)
         self.add_personnage_button = tk.Button(self.personnages_frame, text="Ajouter Personnage", command=self.add_personnage)
         self.add_personnage_button.grid(row=0, column=0, sticky=tk.W)
         self.personnage_entries = []
 
         # Section pour les voies
-        tk.Label(self.root, text="Voies").grid(row=5, column=0, sticky=tk.W)
-        self.voies_frame = tk.Frame(self.root)
+        tk.Label(self.content_frame, text="Voies").grid(row=5, column=0, sticky=tk.W)
+        self.voies_frame = tk.Frame(self.content_frame)
         self.voies_frame.grid(row=5, column=1, sticky=tk.W)
         self.add_voie_button = tk.Button(self.voies_frame, text="Ajouter Voie", command=self.add_voie)
         self.add_voie_button.grid(row=0, column=0, sticky=tk.W)
         self.voie_entries = []
 
         # Section pour les actes
-        tk.Label(self.root, text="Actes").grid(row=6, column=0, sticky=tk.W)
-        self.actes_frame = tk.Frame(self.root)
+        tk.Label(self.content_frame, text="Actes").grid(row=6, column=0, sticky=tk.W)
+        self.actes_frame = tk.Frame(self.content_frame)
         self.actes_frame.grid(row=6, column=1, sticky=tk.W)
         self.add_acte_button = tk.Button(self.actes_frame, text="Ajouter Acte", command=self.add_acte)
         self.add_acte_button.grid(row=0, column=0, sticky=tk.W)
         self.acte_entries = []
 
         # Section pour les conditions
-        tk.Label(self.root, text="Conditions").grid(row=7, column=0, sticky=tk.W)
-        self.conditions_frame = tk.Frame(self.root)
+        tk.Label(self.content_frame, text="Conditions").grid(row=7, column=0, sticky=tk.W)
+        self.conditions_frame = tk.Frame(self.content_frame)
         self.conditions_frame.grid(row=7, column=1, sticky=tk.W)
         self.add_condition_button = tk.Button(self.conditions_frame, text="Ajouter condition", command=self.add_condition)
         self.add_condition_button.grid(row=0, column=0, sticky=tk.W)
         self.condition_entries = []
 
         # Bouton de soumission
-        self.submit_button = tk.Button(self.root, text="Soumettre", command=self.submit)
+        self.submit_button = tk.Button(self.content_frame, text="Soumettre", command=self.submit)
         self.submit_button.grid(row=8, column=1, sticky=tk.W)
 
     def add_personnage(self):
@@ -132,7 +140,7 @@ class SceneFormApp:
         entries_list.remove(frame)
 
     def submit(self):
-        data = {
+        form_data = {
             "idScene": self.id_scene_entry.get(),
             "lieu": self.lieu_entry.get(),
             "interieurExterieur": self.int_ext_entry.get(),
@@ -140,9 +148,40 @@ class SceneFormApp:
             "personnages": [entry.winfo_children()[0].get() for entry in self.personnage_entries],
             "voies": [entry.winfo_children()[0].get() for entry in self.voie_entries],
             "actes": [entry.winfo_children()[0].get() for entry in self.acte_entries],
-            "conditions": self.get_conditions()
         }
-        print(data)  # Vous pouvez changer ceci pour sauvegarder les données ailleurs
+        
+        conditions_data = self.get_conditions()
+        
+        self.show_submit_options(form_data, conditions_data)
+
+    def show_submit_options(self, form_data, conditions_data):
+        options_window = tk.Toplevel(self.root)
+        options_window.title("Options de soumission")
+
+        tk.Label(options_window, text="Nom du fichier (sans extension):").grid(row=0, column=0, sticky=tk.W)
+        self.filename_entry = tk.Entry(options_window)
+        self.filename_entry.grid(row=0, column=1, sticky=tk.W)
+
+        print_button = tk.Button(options_window, text="Imprimer dans le terminal", command=lambda: self.print_data(form_data, conditions_data))
+        print_button.grid(row=1, column=0, sticky=tk.W)
+
+        save_button = tk.Button(options_window, text="Enregistrer en JSON", command=lambda: self.save_data_as_json(form_data, conditions_data))
+        save_button.grid(row=1, column=1, sticky=tk.W)
+
+    def print_data(self, form_data, conditions_data):
+        print("Form Data:", form_data)
+        print("Conditions Data:", conditions_data)
+
+    def save_data_as_json(self, form_data, conditions_data):
+        filename = self.filename_entry.get()
+        if filename:
+            data = {
+                "form_data": form_data,
+                "conditions_data": conditions_data
+            }
+            with open(f"{filename}.json", "w") as f:
+                json.dump(data, f, indent=4)
+            print(f"Data saved to {filename}.json")
 
     def get_conditions(self):
         conditions = []
@@ -153,7 +192,7 @@ class SceneFormApp:
                 ids = [widget.winfo_children()[0].get() for widget in widgets[1:] if isinstance(widget, tk.Frame)]
                 conditions.append({"type": condition_type, "ids": ids})
             elif condition_type == 'conditionAutre':
-                other_text = widgets[1].get()
+                other_text = next(widget.get() for widget in widgets if isinstance(widget, tk.Entry))
                 conditions.append({"type": condition_type, "other": other_text})
         return conditions
 
