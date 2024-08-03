@@ -1,0 +1,31 @@
+{
+    "scenes": [
+        {
+            "info": {
+                "idScene": "1",
+                "lieu": "Maison",
+                "interieurExterieur": "True",
+                "urlTexte": "texte1",
+                "personnages": [
+                    "Alex",
+                    "Didier"
+                ],
+                "voies": [
+                    "A"
+                ],
+                "actes": [
+                    "I"
+                ]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "ids": [
+                        "1",
+                        "2"
+                    ]
+                }
+            ]
+        }
+    ]
+}
