@@ -1,6 +1,7 @@
 import json
+# from scenePackage.scene import Scene
 
-def lire_scenes(fichier_json):
+def creerScenesDepuisJSON(fichier_json):
     try:
         with open(fichier_json, 'r', encoding='utf-8') as file:
             data = json.load(file)
@@ -12,36 +13,34 @@ def lire_scenes(fichier_json):
             
             for scene in scenes:
                 if not isinstance(scene, dict):
-                    raise ValueError(f"Chaque scène doit être un objet JSON. Erreur à la scène {index}.")
+                    raise ValueError(f"Chaque scène doit être un objet JSON.")
                 
                 print(f"Scene:")
                 info = scene.get('info', {})
                 
                 if not isinstance(info, dict):
-                    raise ValueError(f"Le bloc 'info' doit être un objet JSON. Erreur à la scène {index}.")
+                    raise ValueError(f"Le bloc 'info' doit être un objet JSON.")
                 
-                print("  Info:")
-                for key, value in info.items():
-                    if isinstance(value, list):
-                        print(f"    {key}: {', '.join(value)}")
-                    else:
-                        print(f"    {key}: {value}")
+
+                # On pourra utiliser **info pour créer une Scene, il manque juste les conditions
+                # dont on s'occupe maintenant
+
                 
                 conditions = scene.get('conditions', [])
                 
                 if not isinstance(conditions, list):
-                    raise ValueError(f"Le bloc 'conditions' doit être une liste. Erreur à la scène {index}.")
+                    raise ValueError(f"Le bloc 'conditions' doit être une liste.")
                 
                 if conditions:
-                    print("  Conditions:")
                     for condition in conditions:
                         if not isinstance(condition, dict):
-                            raise ValueError(f"Chaque condition doit être un objet JSON. Erreur à la scène {index}.")
-                        for key, value in condition.items():
-                            if isinstance(value, list):
-                                print(f"    {key}: {', '.join(value)}")
-                            else:
-                                print(f"    {key}: {value}")
+                            raise ValueError(f"Chaque condition doit être un objet JSON.")
+                        
+                        match condition["type"]:
+                            case "conditionSceneSuivante":
+                                print("conditionSceneSuivante")
+                            case _:
+                                raise ValueError(f"Cette condition est inconnue")
                 else:
                     print("  No conditions")
                 print("\n")
@@ -56,4 +55,4 @@ def lire_scenes(fichier_json):
         print(f"Une erreur est survenue: {e}")
 
 # Exemple d'utilisation
-lire_scenes('toto.json')
+# creerScenesDepuisJSON('toto.json')
