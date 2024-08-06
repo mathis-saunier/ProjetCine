@@ -51,3 +51,4 @@ def testConditionSceneSuivante():
     print(s2.verifierToutesConditions(film))
 
 js.creerScenesDepuisJSON('toto.json')
+print(sc.Scene.scenesExistantes)

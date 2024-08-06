@@ -221,7 +221,7 @@
 #             condition_type = widgets[0].get()
 #             if condition_type == 'conditionSceneSuivante':
 #                 ids = [widget.winfo_children()[0].get() for widget in widgets[1:] if isinstance(widget, tk.Frame)]
-#                 conditions.append({"type": condition_type, "ids": ids})
+#                 conditions.append({"type": condition_type, "idScenesSuivantesPossibles": ids})
 #             elif condition_type == 'conditionAutre':
 #                 other_text = next(widget.get() for widget in widgets if isinstance(widget, tk.Entry))
 #                 conditions.append({"type": condition_type, "other": other_text})

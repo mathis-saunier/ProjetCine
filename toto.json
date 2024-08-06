@@ -3,12 +3,11 @@
         {
             "info": {
                 "idScene": "1",
-                "lieu": "Maison",
-                "interieurExterieur": "True",
-                "urlTexte": "texte1",
+                "lieu": "1",
+                "interieurExterieur": "1",
+                "urlTexte": "1",
                 "personnages": [
-                    "Alex",
-                    "Didier"
+                    "Alain"
                 ],
                 "voies": [
                     "A"
@@ -20,16 +19,51 @@
             "conditions": [
                 {
                     "type": "conditionSceneSuivante",
-                    "ids": [
-                        "1",
-                        "2"
+                    "idScenesSuivantesPossibles": [
+                        "2",
+                        "3"
                     ]
-                },
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "2",
+                "lieu": "2",
+                "interieurExterieur": "2",
+                "urlTexte": "2",
+                "personnages": [],
+                "voies": [],
+                "actes": []
+            },
+            "conditions": []
+        },
+        {
+            "info": {
+                "idScene": "3",
+                "lieu": "3",
+                "interieurExterieur": "3",
+                "urlTexte": "3",
+                "personnages": [
+                    "Test",
+                    "Gros test"
+                ],
+                "voies": [
+                    "A",
+                    "B"
+                ],
+                "actes": [
+                    "I",
+                    "II"
+                ]
+            },
+            "conditions": [
                 {
                     "type": "conditionSceneSuivante",
-                    "ids": [
-                        "3",
-                        "4"
+                    "idScenesSuivantesPossibles": [
+                        "5",
+                        "6",
+                        "8"
                     ]
                 }
             ]

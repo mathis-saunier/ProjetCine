@@ -1,5 +1,6 @@
 import json
-# from scenePackage.scene import Scene
+from scenePackage import SceneAvecCondition
+from conditionPackage import ConditionSceneSuivante
 
 def creerScenesDepuisJSON(fichier_json):
     try:
@@ -7,7 +8,6 @@ def creerScenesDepuisJSON(fichier_json):
             data = json.load(file)
             
             scenes = data.get("scenes", [])
-            
             if not isinstance(scenes, list):
                 raise ValueError("Le contenu de 'scenes' doit être une liste.")
             
@@ -15,35 +15,33 @@ def creerScenesDepuisJSON(fichier_json):
                 if not isinstance(scene, dict):
                     raise ValueError(f"Chaque scène doit être un objet JSON.")
                 
-                print(f"Scene:")
                 info = scene.get('info', {})
-                
                 if not isinstance(info, dict):
                     raise ValueError(f"Le bloc 'info' doit être un objet JSON.")
                 
-
                 # On pourra utiliser **info pour créer une Scene, il manque juste les conditions
                 # dont on s'occupe maintenant
-
                 
                 conditions = scene.get('conditions', [])
-                
                 if not isinstance(conditions, list):
                     raise ValueError(f"Le bloc 'conditions' doit être une liste.")
                 
-                if conditions:
+                if conditions: # Si l'on a récupéré des conditions
+                    # Alors il faut créer les objets Conditions correspondants et les mettre dans une liste pour ensuite créer la Scene
+                    listeConditions = []
                     for condition in conditions:
                         if not isinstance(condition, dict):
                             raise ValueError(f"Chaque condition doit être un objet JSON.")
                         
                         match condition["type"]:
                             case "conditionSceneSuivante":
-                                print("conditionSceneSuivante")
+                                listeConditions.append(ConditionSceneSuivante(condition["idScenesSuivantesPossibles"]))
                             case _:
                                 raise ValueError(f"Cette condition est inconnue")
-                else:
-                    print("  No conditions")
-                print("\n")
+                    # On a parcouru et créer toutes les conditions. On peut les ajouter aux infos pour créer une scène
+                
+                info.update({"conditions": listeConditions})
+                SceneAvecCondition(**info)
                 
     except FileNotFoundError:
         print(f"Le fichier {fichier_json} n'a pas été trouvé.")
