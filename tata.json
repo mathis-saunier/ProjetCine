@@ -1,0 +1,280 @@
+{
+    "scenes": [
+        {
+            "info": {
+                "idScene": "PF1",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "Diane trouve un portefeuille par terre et lit l'adresse qui est marqu\u00e9e sur la carte d'identit\u00e9. Elle d\u00e9cide de s'y rendre car ce n'est pas loin d'o\u00f9 elle est. Arriv\u00e9e devant la porte, elle frappe \u00e0 la porte.",
+                "personnages": [],
+                "voies": ["A", "B"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "A",
+                        "B"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "A",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "A. Diane entend des bruits \u00e9tranges dans la maison et se rend compte que la porte est d\u00e9j\u00e0 ouverte. La maison est remplie d\u2019animaux empaill\u00e9s. Diane se rend compte qu'un cambrioleur  est actuellement dans la maison (qui ne l'a pas encore vue).  Diane avance jusqu'\u00e0 la table et \u2026",
+                "personnages": [],
+                "voies": ["A"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "PF2"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "B",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "B. Une Dame r\u00e9pond et ouvre la porte. Elle remercie d'avoir ramen\u00e9 la carte d'identit\u00e9 de son mari et invite Diane \u00e0 rentrer la laisse entrer et lui sert du th\u00e9. La maison est remplie d\u2019animaux empaill\u00e9s et la Dame lui explique qu'elle est taxidermiste; elle est actuellement en train de travailler sur sa derni\u00e8re pi\u00e8ce avant de mourir. La Dame lui demande si elle veut voir la pi\u00e8ce en question mais tout en buvant le th\u00e9, Diane s'approche de la table et\u2026",
+                "personnages": [],
+                "voies": ["B"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "PF2"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "PF2",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "Diane renverse un vase qui est sur la table.",
+                "personnages": [],
+                "voies": ["A", "B"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "A1",
+                        "A2",
+                        "B1",
+                        "B2"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "A1",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "Le cambrioleur entend le bruit et descend d\u2019un pas lent.",
+                "personnages": [],
+                "voies": ["A"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "A11"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "A2",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "A.2 Elle d\u00e9couvre qu'un  homme tr\u00e8s \u00e2g\u00e9  habite la maison.",
+                "personnages": [],
+                "voies": ["A"],
+                "actes": ["1"]
+            },
+            "conditions": []
+        },
+        {
+            "info": {
+                "idScene": "B1",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "B.1 La Dame s'\u00e9nerve car elle tient beaucoup \u00e0 ce vase et part dans la cuisine pour se calmer. Diane boit le th\u00e9 que la Dame lui a apport\u00e9 et se sent soudain fatigu\u00e9e, elle soup\u00e7onne la Dame de l'avoir empoisonn\u00e9e.",
+                "personnages": [],
+                "voies": ["B"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "A11"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "B2",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "B.2 La Dame fait un grand sourire \u00e9trange.",
+                "personnages": [],
+                "voies": ["B"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "B21"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "A11",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "A.1.1 Diane essaie de partir mais r\u00e9alise que la porte est ferm\u00e9e",
+                "personnages": [],
+                "voies": ["A"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "A111",
+                        "B211"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "A21",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "A.2.1 Le Vieux explique qu\u2019il est en train de mourir et les deux personnages commencent \u00e0 parler comme s\u2019ils se connaissaient depuis toujours.",
+                "personnages": [],
+                "voies": ["A"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "A211"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "B21",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "B.2.1 Diane se confond en excuses.",
+                "personnages": [],
+                "voies": ["B"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "B211"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "A111",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "A.1.1.1 Diane se cache et le cambrioleur sort de la maison. Elle regarde par la fen\u00eatre le cambrioleur s'\u00e9loigner. Au loin, on dirait qu'il la salue d' un signe de la main. A.1.1.1.1 La police arrive et ne croit pas l'histoire de Diane, ils l'accusent du vol: elle comprend qu'elle s'est faite pi\u00e9ger par le cambrioleur",
+                "personnages": [],
+                "voies": ["A"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "PF3"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "A211",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "A.2.1.1. Il explique qu'il a fait expr\u00e8s de laisser sa carte d'identit\u00e9, il savait que seulement une personne qui ne se laisse pas enfermer  dans le rythme effr\u00e9n\u00e9 de la soci\u00e9t\u00e9 moderne aurait pris le temps de la lui rapporter. Donc quelqu'un pas comme ses enfants qui ne viennent jamais le voir. Le vieux \u00e9crit un myst\u00e9rieux papier et meurt sous les yeux de Diane. A.2.1.1.1 Les enfants du Vieux arrivent et d\u00e9couvrent que leur p\u00e8re a \u00e9crit un nouveau testament donnant toute sa fortune \u00e0 Diane. Ils sont fous de jalousie et accusent Diane d'avoir assassin\u00e9 leur p\u00e8re et fauss\u00e9 le testament.",
+                "personnages": [],
+                "voies": ["A"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "PF3"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "B211",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "B.2.1.1  Diane se saisit d\u2019un morceau de vase bris\u00e9. B.2.1.1.1 Diane essaie tant bien que mal de r\u00e9unir les morceaux du vase. La Dame dit que ce n\u2019est pas possible de les recoller et lui demande si elle veut partir. Diane r\u00e9pond par l\u2019affirmative mais la Dame lui explique que ce n'est pas une maison mais un salon de th\u00e9 de luxe. Diane doit donc payer pour le service : le th\u00e9 co\u00fbte 3 000\u20ac et le vase cass\u00e9 co\u00fbtait 22 000\u20ac. (Toutes les informations \u00e9taient sur la fa\u00e7ade de la maison, elle n'avait qu'\u00e0 faire attention) Diane est dans l'incapacit\u00e9 de payer",
+                "personnages": [],
+                "voies": ["B"],
+                "actes": ["1"]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "PF3"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "PF3",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "Prison",
+                "personnages": [],
+                "voies": ["A","B"],
+                "actes": ["1"]
+            },
+            "conditions": []
+        }
+    ]
+}

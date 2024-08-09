@@ -50,5 +50,8 @@ def testConditionSceneSuivante():
     print("Résultat attendu : ECHEC :")
     print(s2.verifierToutesConditions(film))
 
-js.creerScenesDepuisJSON('toto.json')
-print(sc.Scene.scenesExistantes)
+# js.creerScenesDepuisJSON('toto.json')
+# print(sc.Scene.scenesExistantes)
+
+test = fi.Film("filmToto", 'A')
+test.creerFilmDepuisJSON("tata.json", "PF1")

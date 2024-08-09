@@ -4,6 +4,7 @@ import random as rd
 from scenePackage.scene import Scene
 from conditionPackage.condition import Condition
 from conditionPackage.valeurCondition import ValeurCondition
+import jsonPackage as js
 
 class ZeroSceneRestanteException(Exception):
     def __init__(self, acte, voie):
@@ -23,35 +24,15 @@ class Film():
         self.nomFilm = nomFilm
         self.voieInitiale = voieInitiale
         self.voieActuelle = voieInitiale
-        self.acteActuel = 1
+        self.acteActuel = "1"
     
     def ajouterScene(self, scene):
         self.scenes.append(scene)
     
-    def tirerUneScene(self):
-        scenesPossibles = self.recupererScenesPossibles(self.acteActuel, self.voieActuelle)
-        # On retire egalement les scenes qui sont deja dans le film
-        for s in scenesPossibles:
-            if s in self.scenes:
-                scenesPossibles.remove(s)
-                
-        
-        while len(scenesPossibles) != 0:
-            choix = rd.randrange(0, len(scenesPossibles))
-            sceneChoisie = scenesPossibles[choix]
-            # Maintenant que l'on a une scene possible, on vérifie qu'elle respecte les conditions
-            if (sceneChoisie.verifierToutesLesConditionsPrecedentes(self) == ValeurCondition.SUCCES):
-                return sceneChoisie
-            else:
-                scenesPossibles.remove(sceneChoisie)
-                   
-        if (len(scenesPossibles) == 0):
-            raise ZeroSceneRestanteException(self.acteActuel, self.voieActuelle)
-        
     def recupererScenesPossibles(self, acteActuel, voieActuelle):
         scenesExistantes = deepcopy(Scene.scenesExistantes)
         for s in scenesExistantes:
-            if ((acteActuel not in s.actes) or (voieActuelle not in s.voies)):
+            if (acteActuel not in s.actes):
                 scenesExistantes.remove(s)
         return scenesExistantes
         
@@ -61,6 +42,49 @@ class Film():
             for c in s.conditions:
                 res.append(c)
         return res
+    
+    def tirerUneScene(self):
+        scenesPossibles = self.recupererScenesPossibles(self.acteActuel, self.voieActuelle)
+        # On retire egalement les scenes qui sont deja dans le film
+        for s in scenesPossibles:
+            if s in self.scenes:
+                scenesPossibles.remove(s)
+                
+        while len(scenesPossibles) != 0:
+            choix = rd.randrange(0, len(scenesPossibles))
+            sceneChoisie = scenesPossibles[choix]
+            print(f"Scene choisie avant condition : {sceneChoisie}")
+            # Maintenant que l'on a une scene possible, on vérifie qu'elle respecte les conditions
+            if (sceneChoisie.verifierToutesLesConditionsPrecedentes(self) == ValeurCondition.SUCCES):
+                print("On choisit cette scene")
+                return sceneChoisie
+            else:
+                scenesPossibles.remove(sceneChoisie)
+                print("On ne choisit pas cette scene")
+                   
+        if (len(scenesPossibles) == 0):
+            raise ZeroSceneRestanteException(self.acteActuel, self.voieActuelle)
+        
+    def creerFilmDepuisJSON(self, fichier_json, choixPremiereScene=None):
+        print("Creation scenes")
+        js.creerScenesDepuisJSON(fichier_json)
+        nbTour = 7
+        if choixPremiereScene != None:
+            print("On force la première scène")
+            for s in Scene.scenesExistantes:
+                if s.idScene == choixPremiereScene:
+                    self.ajouterScene(s)
+                    nbTour -= 1
+                    print(s)
+        print("Debut creation film")
+        # Faire une vérif que l'attribut scenes est bien vide
+        for loop in range(nbTour):
+            print(loop)
+            self.ajouterScene(self.tirerUneScene())
+        return self.scenes
+    
+    
+        
         
         
         

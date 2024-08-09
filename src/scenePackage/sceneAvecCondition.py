@@ -1,5 +1,5 @@
 from .scene import Scene
-from conditionPackage import ValeurCondition
+from conditionPackage import ValeurCondition, ConditionSceneSuivante
 
 class SceneAvecCondition(Scene):
     conditions = []
@@ -33,7 +33,9 @@ class SceneAvecCondition(Scene):
         conditionsAVerif = film.recupererConditions()
         # Pour chaque condition, on vérifie que la Scène que l'on souhaite ajouter retourne SUCCES
         for c in conditionsAVerif:
-            if (c.verifierCondition(self) == ValeurCondition.ECHEC):
-                return ValeurCondition.ECHEC
+            # Les conditions de SceneSuivantes dans ANCIENNES scenes n'ont pas lieu d'etre verifiees
+            if not isinstance(c, ConditionSceneSuivante) or (c in (film.scenes[-1]).conditions):
+                if (c.verifierCondition(self) == ValeurCondition.ECHEC):
+                    return ValeurCondition.ECHEC
         return ValeurCondition.SUCCES
     
