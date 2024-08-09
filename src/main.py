@@ -55,3 +55,7 @@ def testConditionSceneSuivante():
 
 test = fi.Film("filmToto", 'A')
 test.creerFilmDepuisJSON("tata.json", "PF1")
+with open("exemplesScripts.txt", "w") as fichier:
+    for i in range(5):
+        fichier.write(test.obtenirScript()+"\n\n")
+        

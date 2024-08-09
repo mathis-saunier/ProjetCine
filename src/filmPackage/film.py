@@ -83,7 +83,11 @@ class Film():
             self.ajouterScene(self.tirerUneScene())
         return self.scenes
     
-    
+    def obtenirScript(self):
+        script = "Début du script\n"
+        for s in self.scenes:
+            script += s.idScene + " : " + s.urlTexte + "\n"
+        return script
         
         
         
