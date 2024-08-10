@@ -50,6 +50,7 @@ class Film():
             if s in self.scenes:
                 scenesPossibles.remove(s)
                 
+        rd.seed()
         while len(scenesPossibles) != 0:
             choix = rd.randrange(0, len(scenesPossibles))
             sceneChoisie = scenesPossibles[choix]
