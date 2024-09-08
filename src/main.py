@@ -53,6 +53,7 @@ def testConditionSceneSuivante():
 # js.creerScenesDepuisJSON('toto.json')
 # print(sc.Scene.scenesExistantes)
 
+
 with open("exemplesScripts.txt", "w") as fichier:
     test = fi.Film("filmToto", 'A')
     test.creerFilmDepuisJSON("tata.json", "PF1")
