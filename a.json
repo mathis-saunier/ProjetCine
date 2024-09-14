@@ -1,0 +1,95 @@
+{
+    "scenes": [
+        {
+            "info": {
+                "idScene": "1",
+                "lieu": "maison",
+                "interieurExterieur": "int",
+                "urlTexte": "Scene 1 texte",
+                "personnages": [
+                    "perso1",
+                    "perso2"
+                ],
+                "voies": [
+                    "A"
+                ],
+                "actes": [
+                    "I",
+                    "II"
+                ]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "3",
+                        "2"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "",
+                "lieu": "",
+                "interieurExterieur": "",
+                "urlTexte": "",
+                "personnages": [
+                    "perso1",
+                    "perso2"
+                ],
+                "voies": [
+                    "A"
+                ],
+                "actes": [
+                    "I",
+                    "II"
+                ]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "3",
+                        "2"
+                    ]
+                }
+            ]
+        },
+        {
+            "info": {
+                "idScene": "2",
+                "lieu": "dehors",
+                "interieurExterieur": "ext",
+                "urlTexte": "Scene 2 texte",
+                "personnages": [
+                    "perso1",
+                    "perso2"
+                ],
+                "voies": [
+                    "A"
+                ],
+                "actes": [
+                    "I",
+                    "II"
+                ]
+            },
+            "conditions": [
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "3",
+                        "2"
+                    ]
+                },
+                {
+                    "type": "conditionSceneSuivante",
+                    "idScenesSuivantesPossibles": [
+                        "4",
+                        "3"
+                    ]
+                }
+            ]
+        }
+    ]
+}

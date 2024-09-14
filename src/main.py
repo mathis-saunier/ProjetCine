@@ -2,7 +2,7 @@
 # On faire ajouter du typage de variable dans les déclarations : https://docs.python.org/fr/3.10/library/typing.html
 from copy import deepcopy
 import tkinter as tk
-from tkinter import simpledialog, messagebox
+from tkinter import simpledialog
 
 import scenePackage as sc
 import planPackage as pl
