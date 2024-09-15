@@ -8,6 +8,7 @@ class MovieManager:
         self.master = master
         self.master.title("Movie Manager")
         self.master.geometry("300x150")
+        self.master.protocol("WM_DELETE_WINDOW", self.on_closing_main)
 
         self.filename_label = tk.Label(master, text="Enter file name:")
         self.filename_label.pack(pady=5)
@@ -23,6 +24,10 @@ class MovieManager:
 
         self.resume_edit_button = tk.Button(self.button_frame, text="Resume the edit", command=self.resume_edit)
         self.resume_edit_button.pack(side=tk.RIGHT, padx=5)
+
+    def on_closing_main(self):
+        if messagebox.askokcancel("Quit", "Do you want to quit?"):
+            self.master.quit()
 
     def new_movie(self):
         filename = self.filename_entry.get()
@@ -49,6 +54,7 @@ class MovieManager:
         self.data_window = tk.Toplevel(self.master)
         self.data_window.title("Enter Movie Data")
         self.data_window.geometry("600x800")
+        self.data_window.protocol("WM_DELETE_WINDOW", self.on_closing_data)
 
         self.filename = filename
         self.is_new = is_new
@@ -61,6 +67,11 @@ class MovieManager:
             self.load_existing_data()
         else:
             self.clear_fields()  # Ensure fields are clear for a new movie
+
+    def on_closing_data(self):
+        if messagebox.askokcancel("Quit", "Do you want to quit? Unsaved changes will be lost."):
+            self.data_window.destroy()
+            self.master.destroy()
 
     def create_widgets(self):
         main_frame = tk.Frame(self.data_window)
@@ -173,19 +184,21 @@ class MovieManager:
         add_idscene_button = tk.Button(idscene_button_frame, text="Add IdScene", 
                                        command=lambda: self.add_idscene(condition_frame))
         
-        def on_condition_select(event):
+        def update_idscene_button_visibility(*args):
             if condition_var.get() == "conditionSceneSuivante":
                 add_idscene_button.pack(side=tk.LEFT, padx=5)
             else:
                 add_idscene_button.pack_forget()
 
-        condition_dropdown.bind("<<ComboboxSelected>>", on_condition_select)
+        condition_var.trace_add("write", update_idscene_button_visibility)
+        condition_dropdown.bind("<<ComboboxSelected>>", lambda event: update_idscene_button_visibility())
 
         self.condition_frames.append((condition_frame, condition_var, [], idscene_button_frame))
         
         condition_frame.pack_forget()
         condition_frame.pack(in_=self.conditions_frame, side=tk.BOTTOM, fill=tk.X, pady=5)
 
+        update_idscene_button_visibility()  # Call this to set initial visibility
         self.update_scrollregion()
 
     def add_idscene(self, parent_frame):
@@ -278,7 +291,7 @@ class MovieManager:
         
         messagebox.showinfo("Success", f"Movie data saved to {self.filename}")
         self.data_window.destroy()
-        self.master.destroy()
+        self.master.quit()
 
     def load_existing_data(self):
         with open(self.filename, 'r') as f:

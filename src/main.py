@@ -55,60 +55,60 @@ import jsonPackage as js
 # js.creerScenesDepuisJSON('toto.json')
 # print(sc.Scene.scenesExistantes)
 
+class MainApplication:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Movie Management System")
+        self.master.geometry("400x250")
 
+        self.create_widgets()
 
-        
-def bouton_action(selection):
-    if selection == 1:
-        # Code pour le bouton 1 (if)
-        js.lancerInterfaceGraphique()
-        root.destroy()
-    else:
-        # Code pour le bouton 2 (else)
-        ouvrir_fenetre_nombre_et_texte()
+        # Set up the window close event
+        self.master.protocol("WM_DELETE_WINDOW", self.on_closing)
 
+    def create_widgets(self):
+        tk.Label(self.master, text="Choose an action:", font=("Arial", 14)).pack(pady=10)
 
-def ouvrir_fenetre_nombre_et_texte():
-    # Nouvelle fenêtre pour demander un texte
-    texte = simpledialog.askstring("Entrée du texte", "Entrez un texte:")
-    
-    if texte is not None:  # Si un texte est entré
-        # Nouvelle fenêtre pour demander un nombre entier
-        nombre = simpledialog.askinteger("Entrée du nombre", "Entrez un nombre entier:")
-        
-        if nombre is not None:  # Si un texte est entré
-            with open("scripts.txt", "w") as fichier:
-                test = fi.Film("filmToto", 'A')
-                for loop in range(nombre):
-                    test.creerFilmDepuisJSON(texte, "PF1")
-                    fichier.write(test.obtenirScript()+"\n\n")
+        tk.Button(self.master, text="Create/Edit Movie Scenes", command=self.launch_movie_manager).pack(pady=5)
+        tk.Button(self.master, text="Generate Scripts", command=self.generate_scripts).pack(pady=5)
+
+    def launch_movie_manager(self):
+        self.master.withdraw()  # Hide the main window
+        movie_manager_window = tk.Toplevel(self.master)
+        movie_manager = js.MovieManager(movie_manager_window)
+        movie_manager_window.protocol("WM_DELETE_WINDOW", lambda: self.on_movie_manager_close(movie_manager_window))
+
+    def on_movie_manager_close(self, window):
+        window.destroy()
+        self.on_closing()  # Close the entire application
+
+    def generate_scripts(self):
+        texte = simpledialog.askstring("Input Text", "Enter the JSON filename:")
+        if texte:
+            nombre = simpledialog.askinteger("Input Number", "Enter the number of scripts to generate:")
+            if nombre:
+                self.create_scripts(texte, nombre)
+            else:
+                print("No number was entered.")
         else:
-            print("Aucun nombre n'a été entré.")
-    else:
-        print("Aucun texte n'a été entré.")
-    
-    root.destroy()
+            print("No text was entered.")
 
-# Création de la fenêtre principale
-root = tk.Tk()
-root.title("Menu avec 2 boutons")
-root.geometry("300x200")
+    def create_scripts(self, json_filename, num_scripts):
+        with open("scripts.txt", "w") as fichier:
+            test = fi.Film("filmToto", 'A')
+            for _ in range(num_scripts):
+                test.creerFilmDepuisJSON(json_filename, "1")
+                fichier.write(test.obtenirScript() + "\n\n")
+        print(f"{num_scripts} scripts have been generated and saved in 'scripts.txt'.")
 
-# Texte explicatif du bouton 1
-texte1 = tk.Label(root, text="Pour lancer l'interface graphique qui permet d'enregistrer les caractéristiques des scènes d'un film (nouveau film ou film à compléter)")
-texte1.pack()
+    def on_closing(self):
+        self.master.quit()  # Stop the mainloop
+        self.master.destroy()  # Destroy the window
 
-# Bouton 1
-bouton1 = tk.Button(root, text="Création de scènes", command=lambda: bouton_action(1))
-bouton1.pack()
+def main():
+    root = tk.Tk()
+    app = MainApplication(root)
+    root.mainloop()
 
-# Texte explicatif du bouton 2
-texte2 = tk.Label(root, text="Pour lancer la création de plusieurs scripts à partir d'un fichier 'film.json'")
-texte2.pack()
-
-# Bouton 2
-bouton2 = tk.Button(root, text="Création de script", command=lambda: bouton_action(2))
-bouton2.pack()
-
-# Lancement de la boucle principale
-root.mainloop()
+if __name__ == "__main__":
+    main()
