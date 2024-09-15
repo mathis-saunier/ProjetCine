@@ -1,239 +1,297 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import messagebox, scrolledtext, ttk
 import json
 import os
 
-class SceneFormApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Formulaire de Scène")
+class MovieManager:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Movie Manager")
+        self.master.geometry("300x150")
 
-        self.scenes = []
-        self.file_name = ""
-        self.main_frame = tk.Frame(self.root)
-        self.main_frame.pack(fill=tk.BOTH, expand=True)
+        self.filename_label = tk.Label(master, text="Enter file name:")
+        self.filename_label.pack(pady=5)
 
-        self.show_start_options()
+        self.filename_entry = tk.Entry(master, width=30)
+        self.filename_entry.pack(pady=5)
 
-    def show_start_options(self):
-        self.clear_frame(self.main_frame)
-        tk.Label(self.main_frame, text="Nom du film:").grid(row=0, column=0, sticky=tk.W)
-        self.movie_name_entry = tk.Entry(self.main_frame)
-        self.movie_name_entry.grid(row=0, column=1, sticky=tk.W)
+        self.button_frame = tk.Frame(master)
+        self.button_frame.pack(pady=10)
 
-        new_button = tk.Button(self.main_frame, text="Nouveau Film", command=self.new_movie)
-        new_button.grid(row=1, column=0, sticky=tk.W)
+        self.new_movie_button = tk.Button(self.button_frame, text="New movie", command=self.new_movie)
+        self.new_movie_button.pack(side=tk.LEFT, padx=5)
 
-        load_button = tk.Button(self.main_frame, text="Reprendre Film", command=self.load_movie)
-        load_button.grid(row=1, column=1, sticky=tk.W)
+        self.resume_edit_button = tk.Button(self.button_frame, text="Resume the edit", command=self.resume_edit)
+        self.resume_edit_button.pack(side=tk.RIGHT, padx=5)
 
     def new_movie(self):
-        self.file_name = self.movie_name_entry.get() + ".json"
-        self.show_scene_form()
-
-    def load_movie(self):
-        self.file_name = self.movie_name_entry.get() + ".json"
-        if os.path.exists(self.file_name):
-            with open(self.file_name, 'r') as file:
-                data = json.load(file)
-                self.scenes = data.get("scenes", [])
-            self.show_scene_form()
+        filename = self.filename_entry.get()
+        if not filename.endswith('.json'):
+            filename += '.json'
+        
+        if os.path.exists(filename):
+            messagebox.showerror("Error", f"The file '{filename}' already exists.")
         else:
-            tk.messagebox.showerror("Erreur", "Fichier non trouvé!")
+            self.open_data_window(filename, is_new=True)
 
-    def show_scene_form(self):
-        self.clear_frame(self.main_frame)
+    def resume_edit(self):
+        filename = self.filename_entry.get()
+        if not filename.endswith('.json'):
+            filename += '.json'
+        
+        if not os.path.exists(filename):
+            messagebox.showerror("Error", f"The file '{filename}' does not exist.")
+        else:
+            self.open_data_window(filename, is_new=False)
 
-        self.canvas = tk.Canvas(self.main_frame)
-        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    def open_data_window(self, filename, is_new):
+        self.master.withdraw()  # Hide the main window
+        self.data_window = tk.Toplevel(self.master)
+        self.data_window.title("Enter Movie Data")
+        self.data_window.geometry("600x800")
 
-        self.scrollbar = ttk.Scrollbar(self.main_frame, orient=tk.VERTICAL, command=self.canvas.yview)
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
-        self.canvas.bind('<Configure>', lambda e: self.canvas.configure(scrollregion=self.canvas.bbox('all')))
-
-        self.content_frame = tk.Frame(self.canvas)
-        self.canvas.create_window((0, 0), window=self.content_frame, anchor='nw')
+        self.filename = filename
+        self.is_new = is_new
+        self.scenes = []
+        self.current_scene = {}
 
         self.create_widgets()
 
+        if not is_new:
+            self.load_existing_data()
+        else:
+            self.clear_fields()  # Ensure fields are clear for a new movie
+
     def create_widgets(self):
-        tk.Label(self.content_frame, text="ID Scene").grid(row=0, column=0, sticky=tk.W)
-        self.id_scene_entry = tk.Entry(self.content_frame)
-        self.id_scene_entry.grid(row=0, column=1, sticky=tk.W)
+        main_frame = tk.Frame(self.data_window)
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        tk.Label(self.content_frame, text="Lieu").grid(row=1, column=0, sticky=tk.W)
-        self.lieu_entry = tk.Entry(self.content_frame)
-        self.lieu_entry.grid(row=1, column=1, sticky=tk.W)
+        self.canvas = tk.Canvas(main_frame)
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        tk.Label(self.content_frame, text="Intérieur/Extérieur").grid(row=2, column=0, sticky=tk.W)
-        self.int_ext_entry = tk.Entry(self.content_frame)
-        self.int_ext_entry.grid(row=2, column=1, sticky=tk.W)
+        scrollbar = tk.Scrollbar(main_frame, orient=tk.VERTICAL, command=self.canvas.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        tk.Label(self.content_frame, text="URL Texte").grid(row=3, column=0, sticky=tk.W)
-        self.url_texte_entry = tk.Entry(self.content_frame)
-        self.url_texte_entry.grid(row=3, column=1, sticky=tk.W)
+        self.canvas.configure(yscrollcommand=scrollbar.set)
+        self.canvas.bind('<Configure>', self.update_scrollregion)
 
-        # Section pour les personnages
-        tk.Label(self.content_frame, text="Personnages").grid(row=4, column=0, sticky=tk.W)
-        self.personnages_frame = tk.Frame(self.content_frame)
-        self.personnages_frame.grid(row=4, column=1, sticky=tk.W)
-        self.add_personnage_button = tk.Button(self.personnages_frame, text="Ajouter Personnage", command=self.add_personnage)
-        self.add_personnage_button.grid(row=0, column=0, sticky=tk.W)
-        self.personnage_entries = []
+        self.inner_frame = tk.Frame(self.canvas)
+        self.canvas_window = self.canvas.create_window((0, 0), window=self.inner_frame, anchor="nw")
 
-        # Section pour les voies
-        tk.Label(self.content_frame, text="Voies").grid(row=5, column=0, sticky=tk.W)
-        self.voies_frame = tk.Frame(self.content_frame)
-        self.voies_frame.grid(row=5, column=1, sticky=tk.W)
-        self.add_voie_button = tk.Button(self.voies_frame, text="Ajouter Voie", command=self.add_voie)
-        self.add_voie_button.grid(row=0, column=0, sticky=tk.W)
-        self.voie_entries = []
+        labels = ["idScene", "lieu", "interieurExterieur", "urlTexte"]
+        self.entries = {}
 
-        # Section pour les actes
-        tk.Label(self.content_frame, text="Actes").grid(row=6, column=0, sticky=tk.W)
-        self.actes_frame = tk.Frame(self.content_frame)
-        self.actes_frame.grid(row=6, column=1, sticky=tk.W)
-        self.add_acte_button = tk.Button(self.actes_frame, text="Ajouter Acte", command=self.add_acte)
-        self.add_acte_button.grid(row=0, column=0, sticky=tk.W)
-        self.acte_entries = []
+        for label in labels:
+            tk.Label(self.inner_frame, text=label).pack(pady=5)
+            self.entries[label] = tk.Entry(self.inner_frame, width=50)
+            self.entries[label].pack(pady=5)
 
-        # Section pour les conditions
-        tk.Label(self.content_frame, text="Conditions").grid(row=7, column=0, sticky=tk.W)
-        self.conditions_frame = tk.Frame(self.content_frame)
-        self.conditions_frame.grid(row=7, column=1, sticky=tk.W)
-        self.add_condition_button = tk.Button(self.conditions_frame, text="Ajouter condition", command=self.add_condition)
-        self.add_condition_button.grid(row=0, column=0, sticky=tk.W)
-        self.condition_entries = []
+        self.create_section("personnages")
+        self.create_section("voies")
+        self.create_section("actes")
+        self.create_conditions_section()
 
-        # Bouton de soumission
-        self.submit_button = tk.Button(self.content_frame, text="Soumettre", command=self.submit)
-        self.submit_button.grid(row=8, column=1, sticky=tk.W)
+        button_frame = tk.Frame(self.inner_frame)
+        button_frame.pack(pady=10, fill=tk.X)
 
-    def add_personnage(self):
-        frame = tk.Frame(self.personnages_frame)
-        frame.grid(row=len(self.personnage_entries) + 1, column=0, sticky=tk.W)
-        entry = tk.Entry(frame)
-        entry.grid(row=0, column=0, sticky=tk.W)
-        delete_button = tk.Button(frame, text="Supprimer", command=lambda: self.remove_entry(frame, self.personnage_entries))
-        delete_button.grid(row=0, column=1, sticky=tk.W)
-        self.personnage_entries.append(frame)
+        self.next_scene_button = tk.Button(button_frame, text="Next Scene", command=self.next_scene)
+        self.next_scene_button.pack(side=tk.LEFT, padx=5)
 
-    def add_voie(self):
-        frame = tk.Frame(self.voies_frame)
-        frame.grid(row=len(self.voie_entries) + 1, column=0, sticky=tk.W)
-        entry = tk.Entry(frame)
-        entry.grid(row=0, column=0, sticky=tk.W)
-        delete_button = tk.Button(frame, text="Supprimer", command=lambda: self.remove_entry(frame, self.voie_entries))
-        delete_button.grid(row=0, column=1, sticky=tk.W)
-        self.voie_entries.append(frame)
+        self.save_movie_button = tk.Button(button_frame, text="Save Movie", command=self.save_movie)
+        self.save_movie_button.pack(side=tk.LEFT, padx=5)
 
-    def add_acte(self):
-        frame = tk.Frame(self.actes_frame)
-        frame.grid(row=len(self.acte_entries) + 1, column=0, sticky=tk.W)
-        entry = tk.Entry(frame)
-        entry.grid(row=0, column=0, sticky=tk.W)
-        delete_button = tk.Button(frame, text="Supprimer", command=lambda: self.remove_entry(frame, self.acte_entries))
-        delete_button.grid(row=0, column=1, sticky=tk.W)
-        self.acte_entries.append(frame)
+    def create_section(self, section_name):
+        section_frame = tk.Frame(self.inner_frame)
+        section_frame.pack(pady=10, fill=tk.X)
+        
+        tk.Label(section_frame, text=section_name.capitalize()).pack(pady=5)
+        
+        add_button = tk.Button(section_frame, text=f"Add {section_name}", 
+                               command=lambda: self.add_entry(section_frame, section_name))
+        add_button.pack(pady=5)
+        
+        setattr(self, f"{section_name}_frame", section_frame)
+        setattr(self, f"{section_name}_entries", [])
+
+    def update_scrollregion(self, event=None):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def add_entry(self, parent_frame, section_name):
+        entry_frame = tk.Frame(parent_frame)
+        entry_frame.pack(fill=tk.X, pady=2)
+        
+        entry = tk.Entry(entry_frame, width=40)
+        entry.pack(side=tk.LEFT, padx=(0, 5))
+        
+        delete_button = tk.Button(entry_frame, text="Delete", 
+                                  command=lambda f=entry_frame: self.delete_entry(f, section_name))
+        delete_button.pack(side=tk.LEFT)
+        
+        getattr(self, f"{section_name}_entries").insert(0, entry)
+        
+        # Move the new entry frame to the top of the section
+        entry_frame.pack_forget()
+        entry_frame.pack(in_=parent_frame, after=parent_frame.winfo_children()[1], fill=tk.X, pady=2)
+
+        self.update_scrollregion()
+
+    def delete_entry(self, entry_frame, section_name):
+        entries = getattr(self, f"{section_name}_entries")
+        entry = entry_frame.winfo_children()[0]
+        entries.remove(entry)
+        entry_frame.destroy()
+        self.update_scrollregion()
+
+    def create_conditions_section(self):
+        self.conditions_frame = tk.Frame(self.inner_frame)
+        self.conditions_frame.pack(pady=10, fill=tk.X)
+        
+        tk.Label(self.conditions_frame, text="Conditions").pack(pady=5)
+        
+        self.add_condition_button = tk.Button(self.conditions_frame, text="Add a condition", command=self.add_condition)
+        self.add_condition_button.pack(pady=5)
+
+        self.condition_frames = []
 
     def add_condition(self):
         condition_frame = tk.Frame(self.conditions_frame)
-        condition_frame.grid(row=len(self.condition_entries) + 1, column=0, sticky=tk.W)
-        
+        condition_frame.pack(fill=tk.X, pady=5)
+
         condition_var = tk.StringVar()
-        condition_menu = ttk.Combobox(condition_frame, textvariable=condition_var)
-        condition_menu['values'] = ('conditionSceneSuivante', 'conditionAutre')
-        condition_menu.grid(row=0, column=0, sticky=tk.W)
-        condition_menu.bind('<<ComboboxSelected>>', lambda event, frame=condition_frame, var=condition_var: self.add_condition_fields(frame, var))
+        condition_dropdown = ttk.Combobox(condition_frame, textvariable=condition_var, 
+                                          values=["conditionSceneSuivante"])
+        condition_dropdown.pack(side=tk.LEFT, padx=5)
+        condition_dropdown.set("Select Condition")
+
+        delete_condition_button = tk.Button(condition_frame, text="Delete Condition", 
+                                            command=lambda: self.delete_condition(condition_frame))
+        delete_condition_button.pack(side=tk.LEFT, padx=5)
+
+        idscene_button_frame = tk.Frame(condition_frame)
+        idscene_button_frame.pack(fill=tk.X, pady=2)
+
+        add_idscene_button = tk.Button(idscene_button_frame, text="Add IdScene", 
+                                       command=lambda: self.add_idscene(condition_frame))
         
-        delete_button = tk.Button(condition_frame, text="Supprimer", command=lambda: self.remove_entry(condition_frame, self.condition_entries))
-        delete_button.grid(row=0, column=1, sticky=tk.W)
+        def on_condition_select(event):
+            if condition_var.get() == "conditionSceneSuivante":
+                add_idscene_button.pack(side=tk.LEFT, padx=5)
+            else:
+                add_idscene_button.pack_forget()
+
+        condition_dropdown.bind("<<ComboboxSelected>>", on_condition_select)
+
+        self.condition_frames.append((condition_frame, condition_var, [], idscene_button_frame))
         
-        self.condition_entries.append(condition_frame)
+        condition_frame.pack_forget()
+        condition_frame.pack(in_=self.conditions_frame, side=tk.BOTTOM, fill=tk.X, pady=5)
 
-    def add_condition_fields(self, frame, var):
-        if var.get() == 'conditionSceneSuivante':
-            add_id_scene_button = tk.Button(frame, text="Ajouter idScene", command=lambda: self.add_id_scene(frame))
-            add_id_scene_button.grid(row=1, column=0, sticky=tk.W)
-        elif var.get() == 'conditionAutre':
-            other_entry = tk.Entry(frame)
-            other_entry.grid(row=1, column=0, sticky=tk.W)
+        self.update_scrollregion()
 
-    def add_id_scene(self, frame):
-        id_scene_frame = tk.Frame(frame)
-        id_scene_frame.grid(row=len(frame.winfo_children()), column=0, sticky=tk.W)
-        id_scene_entry = tk.Entry(id_scene_frame)
-        id_scene_entry.grid(row=0, column=0, sticky=tk.W)
-        delete_button = tk.Button(id_scene_frame, text="Supprimer", command=lambda: self.remove_entry(id_scene_frame, frame.winfo_children()))
-        delete_button.grid(row=0, column=1, sticky=tk.W)
+    def add_idscene(self, parent_frame):
+        for condition_frame, _, idscene_entries, idscene_button_frame in self.condition_frames:
+            if condition_frame == parent_frame:
+                idscene_frame = tk.Frame(parent_frame)
+                idscene_frame.pack(fill=tk.X, pady=2)
+                
+                entry = tk.Entry(idscene_frame, width=40)
+                entry.pack(side=tk.LEFT, padx=(0, 5))
+                
+                delete_button = tk.Button(idscene_frame, text="Delete", 
+                                          command=lambda f=idscene_frame, p=parent_frame: self.delete_idscene(f, p))
+                delete_button.pack(side=tk.LEFT)
+                
+                idscene_entries.append(entry)
+                
+                # Move the new IdScene entry just below the "Add IdScene" button
+                idscene_frame.pack_forget()
+                idscene_frame.pack(in_=parent_frame, after=idscene_button_frame, fill=tk.X, pady=2)
+                
+                self.update_scrollregion()
+                break
 
-    def remove_entry(self, frame, entries_list):
-        frame.destroy()
-        entries_list.remove(frame)
+    def delete_idscene(self, idscene_frame, parent_frame):
+        for condition_frame, _, idscene_entries, _ in self.condition_frames:
+            if condition_frame == parent_frame:
+                entry = idscene_frame.winfo_children()[0]
+                idscene_entries.remove(entry)
+                break
+        idscene_frame.destroy()
+        self.update_scrollregion()
 
-    def submit(self):
-        form_data = {
-            "idScene": self.id_scene_entry.get(),
-            "lieu": self.lieu_entry.get(),
-            "interieurExterieur": self.int_ext_entry.get(),
-            "urlTexte": self.url_texte_entry.get(),
-            "personnages": [entry.winfo_children()[0].get() for entry in self.personnage_entries],
-            "voies": [entry.winfo_children()[0].get() for entry in self.voie_entries],
-            "actes": [entry.winfo_children()[0].get() for entry in self.acte_entries],
+    def delete_condition(self, condition_frame):
+        self.condition_frames = [cf for cf in self.condition_frames if cf[0] != condition_frame]
+        condition_frame.destroy()
+        self.update_scrollregion()
+
+    def save_current_scene(self):
+        scene_data = {
+            "info": {
+                label: self.entries[label].get() for label in self.entries
+            },
+            "conditions": []
         }
         
-        conditions_data = self.get_conditions()
+        scene_data["info"].update({
+            "personnages": [entry.get() for entry in self.personnages_entries],
+            "voies": [entry.get() for entry in self.voies_entries],
+            "actes": [entry.get() for entry in self.actes_entries]
+        })
 
-        scene = {
-            "info": form_data,
-            "conditions": conditions_data
-        }
+        for _, condition_var, idscene_entries, _ in self.condition_frames:
+            if condition_var.get() != "Select Condition":
+                condition = {
+                    "type": condition_var.get(),
+                    "idScenesSuivantesPossibles": [entry.get() for entry in idscene_entries]
+                }
+                scene_data["conditions"].append(condition)
+
+        return scene_data
+
+    def next_scene(self):
+        self.scenes.append(self.save_current_scene())
+        self.clear_fields()
+
+    def clear_fields(self):
+        for entry in self.entries.values():
+            entry.delete(0, tk.END)
         
-        self.scenes.append(scene)
-        self.show_submit_options()
-
-    def show_submit_options(self):
-        options_window = tk.Toplevel(self.root)
-        options_window.title("Options de soumission")
-
-        tk.Label(options_window, text="Souhaitez-vous ajouter une autre scène ou enregistrer le film?").grid(row=0, column=0, columnspan=2, sticky=tk.W)
-
-        new_scene_button = tk.Button(options_window, text="Ajouter une autre scène", command=lambda: [options_window.destroy(), self.clear_frame(self.main_frame), self.show_scene_form()])
-        new_scene_button.grid(row=1, column=0, sticky=tk.W)
-
-        save_button = tk.Button(options_window, text="Enregistrer le film", command=lambda: [self.save_movie(), options_window.destroy()])
-        save_button.grid(row=1, column=1, sticky=tk.W)
+        for section in ["personnages", "voies", "actes"]:
+            section_frame = getattr(self, f"{section}_frame")
+            for child in section_frame.winfo_children()[2:]:  # Skip label and add button
+                child.destroy()
+            setattr(self, f"{section}_entries", [])
+        
+        for condition_frame, _, _, _ in self.condition_frames:
+            condition_frame.destroy()
+        self.condition_frames.clear()
 
     def save_movie(self):
-        data = {
-            "scenes": self.scenes
-        }
-        with open(self.file_name, "w") as f:
-            json.dump(data, f, indent=4)
-        print(f"Data saved to {self.file_name}")
+        current_scene = self.save_current_scene()
+        if any(current_scene["info"].values()) or current_scene["conditions"]:
+            self.scenes.append(current_scene)
+        
+        movie_data = {"scenes": self.scenes}
+        
+        with open(self.filename, 'w') as f:
+            json.dump(movie_data, f, indent=4)
+        
+        messagebox.showinfo("Success", f"Movie data saved to {self.filename}")
+        self.data_window.destroy()
+        self.master.destroy()
 
-    def get_conditions(self):
-        conditions = []
-        for frame in self.condition_entries:
-            widgets = frame.winfo_children()
-            condition_type = widgets[0].get()
-            if condition_type == 'conditionSceneSuivante':
-                ids = [widget.winfo_children()[0].get() for widget in widgets[1:] if isinstance(widget, tk.Frame)]
-                conditions.append({"type": condition_type, "idScenesSuivantesPossibles": ids})
-            elif condition_type == 'conditionAutre':
-                other_text = next(widget.get() for widget in widgets if isinstance(widget, tk.Entry))
-                conditions.append({"type": condition_type, "other": other_text})
-        return conditions
-
-    def clear_frame(self, frame):
-        for widget in frame.winfo_children():
-            widget.destroy()
+    def load_existing_data(self):
+        with open(self.filename, 'r') as f:
+            movie_data = json.load(f)
+        
+        self.scenes = movie_data.get("scenes", [])
+        
+        # Start with empty fields for a new scene
+        self.clear_fields()
 
 def lancerInterfaceGraphique():
     root = tk.Tk()
-    app = SceneFormApp(root)
+    app = MovieManager(root)
     root.mainloop()
 
 if __name__ == "__main__":
