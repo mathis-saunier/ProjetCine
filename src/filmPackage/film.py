@@ -6,6 +6,11 @@ from conditionPackage.condition import Condition
 from conditionPackage.valeurCondition import ValeurCondition
 import jsonPackage as js
 
+class SceneInexistanteException(Exception):
+    def __init__(self, id):
+        self.id = id
+        super().__init__(f"Erreur, la scènes d'id {id} n'existe pas")
+
 class ZeroSceneRestanteException(Exception):
     def __init__(self, acte, voie):
         self.acte = acte
@@ -14,6 +19,7 @@ class ZeroSceneRestanteException(Exception):
         
 class Film():
     nomFilm = None
+    scenesDuFilm = []
     scenesDuScript = []
     voieInitiale = None
     voieActuelle = None
@@ -31,7 +37,7 @@ class Film():
     
     # Ne prendre pas en compte l'acte ou la voie actuel.le
     def recupererScenesPossibles(self, acteActuel, voieActuelle):
-        scenesExistantes = deepcopy(Scene.scenesExistantes)
+        scenesExistantes = deepcopy(self.scenesDuFilm)
         return scenesExistantes
         
     def recupererConditions(self):
@@ -64,13 +70,18 @@ class Film():
         if (len(scenesPossibles) == 0):
             raise ZeroSceneRestanteException(self.acteActuel, self.voieActuelle)
         
-    def creerFilmDepuisJSON(self, fichier_json, choixPremiereScene=None):
-        print("Creation scenes")
-        js.creerScenesDepuisJSON(fichier_json)
+    def creerFilmDepuisJSON(self, fichier_json):
+        self.scenesDuFilm = js.creerScenesDepuisJSON(fichier_json)
+
+    # nombre de tour est une variable temporaire. Il y a mieux à faire comme fonctionnement
+    def creerScript(self, choixPremiereScene=None):
+        # On reinitialise tout potentiel ancien script
+        self.scenesDuScript = []
+        
         nbTour = 8
         if choixPremiereScene != None:
             print("On force la première scène")
-            for s in Scene.scenesExistantes:
+            for s in self.scenesDuFilm:
                 if s.idScene == choixPremiereScene:
                     self.ajouterScene(s)
                     nbTour -= 1
@@ -87,6 +98,20 @@ class Film():
         for s in self.scenesDuScript:
             script += s.idScene + " : " + s.urlTexte + "\n"
         return script
+    
+
+    def sceneDejaExistante(self, idScene):
+        for scene in self.scenesDuFilm:
+            if (idScene == scene.idScene):
+                return True
+        return False
+    
+    def obtenirSceneParId(self, id):
+        for s in self.scenesDuFilm:
+            if (s.idScene == id):
+                return s
+        # Si l'on a pas trouvé de scene on lève une exception
+        raise SceneInexistanteException(id)
         
         
         

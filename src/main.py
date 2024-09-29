@@ -97,7 +97,8 @@ class MainApplication:
         with open("scripts.txt", "w") as fichier:
             test = fi.Film("filmToto", 'A')
             for _ in range(num_scripts):
-                test.creerFilmDepuisJSON(json_filename, "1")
+                test.creerFilmDepuisJSON(json_filename)
+                test.creerScript(choixPremiereScene="1")
                 fichier.write(test.obtenirScript() + "\n\n")
         print(f"{num_scripts} scripts have been generated and saved in 'scripts.txt'.")
 

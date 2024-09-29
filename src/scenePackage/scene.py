@@ -1,13 +1,7 @@
 # A faire : Changer le nom de interieurExterieur
 
-class SceneInexistanteException(Exception):
-    def __init__(self, id):
-        self.id = id
-        super().__init__(f"Erreur, la scènes d'id {id} n'existe pas")
-
 class Scene:
     idScene = None
-    scenesExistantes = []
     
     # Donnees description
     lieu = None
@@ -21,11 +15,7 @@ class Scene:
     
     
     def __init__(self, idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes):
-        # Faire une exception propre pour gerer la création d'une scene avec un ID deja existant
-        if self.sceneDejaExistante(idScene):
-            print("PROBLEME : l'id '"+str(idScene) + "' existe déjà pour une scène")
         self.idScene = idScene
-        Scene.scenesExistantes.append(self)
         
         # Initialisation des donnees de description
         self.lieu = lieu
@@ -63,17 +53,5 @@ class Scene:
         return self.idScene == other.idScene
         
     
-    # A mettre en privé ?
-    def sceneDejaExistante(self, idScene):
-        for scene in Scene.scenesExistantes:
-            if (idScene == scene.idScene):
-                return True
-        return False
     
-    def obtenirSceneParId(id):
-        for s in Scene.scenesExistantes:
-            if (s.idScene == id):
-                return s
-        # Si l'on a pas trouvé de scene on lève une exception
-        raise SceneInexistanteException(id)
         

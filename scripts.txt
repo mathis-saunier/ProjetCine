@@ -1,0 +1,55 @@
+Début du script
+1 : IdScene 1 : Diane trouve un portefeuille par terre et lit l'adresse qui est marquée sur la carte d'identité. Elle décide de s'y rendre car ce n'est pas loin d'où elle est. Arrivée devant la porte, elle frappe à la porte.
+3 : IdScene 3 : B. Une Dame répond et ouvre la porte. Elle remercie d'avoir ramené la carte d'identité de son mari et invite Diane à rentrer la laisse entrer et lui sert du thé. La maison est remplie d’animaux empaillés et la Dame lui explique qu'elle est taxidermiste; elle est actuellement en train de travailler sur sa dernière pièce avant de mourir. La Dame lui demande si elle veut voir la pièce en question mais tout en buvant le thé, Diane s'approche de la table et…
+4 : IdScene 4 : Diane renverse un vase qui est sur la table.
+6 : IdScene 6 : A.2 Elle découvre qu'un  homme très âgé  habite la maison.
+10 : IdScene 10 : A.2.1 Le Vieux explique qu’il est en train de mourir et les deux personnages commencent à parler comme s’ils se connaissaient depuis toujours.
+13 : IdScene 13 : A.2.1.1. Il explique qu'il a fait exprès de laisser sa carte d'identité, il savait que seulement une personne qui ne se laisse pas enfermer  dans le rythme effréné de la société moderne aurait pris le temps de la lui rapporter. Donc quelqu'un pas comme ses enfants qui ne viennent jamais le voir. Le vieux écrit un mystérieux papier et meurt sous les yeux de Diane.
+16 : IdScene 16 : A.2.1.1.1 Les enfants du Vieux arrivent et découvrent que leur père a écrit un nouveau testament donnant toute sa fortune à Diane. Ils sont fous de jalousie et accusent Diane d'avoir assassiné leur père et faussé le testament.
+19 : IdScene 19 : Diane se réveille en prison.
+
+
+Début du script
+1 : IdScene 1 : Diane trouve un portefeuille par terre et lit l'adresse qui est marquée sur la carte d'identité. Elle décide de s'y rendre car ce n'est pas loin d'où elle est. Arrivée devant la porte, elle frappe à la porte.
+2 : IdScene 2 : A. Diane entend des bruits étranges dans la maison et se rend compte que la porte est déjà ouverte. La maison est remplie d’animaux empaillés. Diane se rend compte qu'un cambrioleur  est actuellement dans la maison (qui ne l'a pas encore vue).  Diane avance jusqu'à la table et …
+4 : IdScene 4 : Diane renverse un vase qui est sur la table.
+5 : IdScene 5 : A. 1. Le cambrioleur entend le bruit et descend d’un pas lent.
+9 : IdScene 9 : B.1.1 ou A.1.1 Diane essaie de partir mais réalise que la porte est fermée
+12 : IdScene 12 : A.1.1.1 Diane se cache et le cambrioleur sort de la maison. Elle regarde par la fenêtre le cambrioleur s'éloigner. Au loin, on dirait qu'il la salue d' un signe de la main.
+15 : IdScene 15 : A.1.1.1.1 La police arrive et ne croit pas l'histoire de Diane, ils l'accusent du vol: elle comprend qu'elle s'est faite piéger par le cambrioleur
+19 : IdScene 19 : Diane se réveille en prison.
+
+
+Début du script
+1 : IdScene 1 : Diane trouve un portefeuille par terre et lit l'adresse qui est marquée sur la carte d'identité. Elle décide de s'y rendre car ce n'est pas loin d'où elle est. Arrivée devant la porte, elle frappe à la porte.
+2 : IdScene 2 : A. Diane entend des bruits étranges dans la maison et se rend compte que la porte est déjà ouverte. La maison est remplie d’animaux empaillés. Diane se rend compte qu'un cambrioleur  est actuellement dans la maison (qui ne l'a pas encore vue).  Diane avance jusqu'à la table et …
+4 : IdScene 4 : Diane renverse un vase qui est sur la table.
+8 : IdScene 8 : B.2 La Dame fait un grand sourire étrange.
+11 : IdScene 11 : B.2.1 Diane se confond en excuses.
+14 : IdScene 14 : B.1.1.1 et  B.2.1.1  Diane se saisit d’un morceau de vase brisé.
+18 : IdScene 18 : B.2.1.1.1 Diane essaie tant bien que mal de réunir les morceaux du vase. La Dame dit que ce n’est pas possible de les recoller et lui demande si elle veut partir. Diane répond par l’affirmative mais la Dame lui explique que ce n'est pas une maison mais un salon de thé de luxe. Diane doit donc payer pour le service : le thé coûte 3 000€ et le vase cassé coûtait 22 000€. (Toutes les informations étaient sur la façade de la maison, elle n'avait qu'à faire attention) Diane est dans l'incapacité de payer.
+19 : IdScene 19 : Diane se réveille en prison.
+
+
+Début du script
+1 : IdScene 1 : Diane trouve un portefeuille par terre et lit l'adresse qui est marquée sur la carte d'identité. Elle décide de s'y rendre car ce n'est pas loin d'où elle est. Arrivée devant la porte, elle frappe à la porte.
+2 : IdScene 2 : A. Diane entend des bruits étranges dans la maison et se rend compte que la porte est déjà ouverte. La maison est remplie d’animaux empaillés. Diane se rend compte qu'un cambrioleur  est actuellement dans la maison (qui ne l'a pas encore vue).  Diane avance jusqu'à la table et …
+4 : IdScene 4 : Diane renverse un vase qui est sur la table.
+8 : IdScene 8 : B.2 La Dame fait un grand sourire étrange.
+11 : IdScene 11 : B.2.1 Diane se confond en excuses.
+14 : IdScene 14 : B.1.1.1 et  B.2.1.1  Diane se saisit d’un morceau de vase brisé.
+18 : IdScene 18 : B.2.1.1.1 Diane essaie tant bien que mal de réunir les morceaux du vase. La Dame dit que ce n’est pas possible de les recoller et lui demande si elle veut partir. Diane répond par l’affirmative mais la Dame lui explique que ce n'est pas une maison mais un salon de thé de luxe. Diane doit donc payer pour le service : le thé coûte 3 000€ et le vase cassé coûtait 22 000€. (Toutes les informations étaient sur la façade de la maison, elle n'avait qu'à faire attention) Diane est dans l'incapacité de payer.
+19 : IdScene 19 : Diane se réveille en prison.
+
+
+Début du script
+1 : IdScene 1 : Diane trouve un portefeuille par terre et lit l'adresse qui est marquée sur la carte d'identité. Elle décide de s'y rendre car ce n'est pas loin d'où elle est. Arrivée devant la porte, elle frappe à la porte.
+3 : IdScene 3 : B. Une Dame répond et ouvre la porte. Elle remercie d'avoir ramené la carte d'identité de son mari et invite Diane à rentrer la laisse entrer et lui sert du thé. La maison est remplie d’animaux empaillés et la Dame lui explique qu'elle est taxidermiste; elle est actuellement en train de travailler sur sa dernière pièce avant de mourir. La Dame lui demande si elle veut voir la pièce en question mais tout en buvant le thé, Diane s'approche de la table et…
+4 : IdScene 4 : Diane renverse un vase qui est sur la table.
+5 : IdScene 5 : A. 1. Le cambrioleur entend le bruit et descend d’un pas lent.
+9 : IdScene 9 : B.1.1 ou A.1.1 Diane essaie de partir mais réalise que la porte est fermée
+12 : IdScene 12 : A.1.1.1 Diane se cache et le cambrioleur sort de la maison. Elle regarde par la fenêtre le cambrioleur s'éloigner. Au loin, on dirait qu'il la salue d' un signe de la main.
+15 : IdScene 15 : A.1.1.1.1 La police arrive et ne croit pas l'histoire de Diane, ils l'accusent du vol: elle comprend qu'elle s'est faite piéger par le cambrioleur
+19 : IdScene 19 : Diane se réveille en prison.
+
+

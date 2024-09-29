@@ -11,6 +11,8 @@ def creerScenesDepuisJSON(fichier_json):
             if not isinstance(scenes, list):
                 raise ValueError("Le contenu de 'scenes' doit être une liste.")
             
+            # On cree une liste qui stockera les scenes crees pour les retourner
+            scenesCreesDepuisJSON = []
             for scene in scenes:
                 if not isinstance(scene, dict):
                     raise ValueError(f"Chaque scène doit être un objet JSON.")
@@ -41,8 +43,11 @@ def creerScenesDepuisJSON(fichier_json):
                     # On a parcouru et créer toutes les conditions. On peut les ajouter aux infos pour créer une scène
                 
                 info.update({"conditions": listeConditions})
-                SceneAvecCondition(**info)
+                # On cree la scene et on l'ajoute a notre liste qui sera retourner
+                scenesCreesDepuisJSON.append(SceneAvecCondition(**info))
                 
+            return scenesCreesDepuisJSON
+        
     except FileNotFoundError:
         print(f"Le fichier {fichier_json} n'a pas été trouvé.")
     except json.JSONDecodeError:
