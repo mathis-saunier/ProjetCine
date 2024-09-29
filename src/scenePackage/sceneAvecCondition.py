@@ -34,7 +34,7 @@ class SceneAvecCondition(Scene):
         # Pour chaque condition, on vérifie que la Scène que l'on souhaite ajouter retourne SUCCES
         for c in conditionsAVerif:
             # Les conditions de SceneSuivantes dans ANCIENNES scenes n'ont pas lieu d'etre verifiees
-            if not isinstance(c, ConditionSceneSuivante) or (c in (film.scenes[-1]).conditions):
+            if not isinstance(c, ConditionSceneSuivante) or (c in (film.scenesDuScript[-1]).conditions):
                 if (c.verifierCondition(self) == ValeurCondition.ECHEC):
                     return ValeurCondition.ECHEC
         return ValeurCondition.SUCCES

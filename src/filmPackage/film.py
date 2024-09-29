@@ -14,7 +14,7 @@ class ZeroSceneRestanteException(Exception):
         
 class Film():
     nomFilm = None
-    scenes = []
+    scenesDuScript = []
     voieInitiale = None
     voieActuelle = None
     acteActuel = None
@@ -27,27 +27,25 @@ class Film():
         self.acteActuel = "1"
     
     def ajouterScene(self, scene):
-        self.scenes.append(scene)
+        self.scenesDuScript.append(scene)
     
+    # Ne prendre pas en compte l'acte ou la voie actuel.le
     def recupererScenesPossibles(self, acteActuel, voieActuelle):
         scenesExistantes = deepcopy(Scene.scenesExistantes)
-        for s in scenesExistantes:
-            if (acteActuel not in s.actes):
-                scenesExistantes.remove(s)
         return scenesExistantes
         
     def recupererConditions(self):
         res = []
-        for s in self.scenes:
+        for s in self.scenesDuScript:
             for c in s.conditions:
                 res.append(c)
         return res
     
     def tirerUneScene(self):
         scenesPossibles = self.recupererScenesPossibles(self.acteActuel, self.voieActuelle)
-        # On retire egalement les scenes qui sont deja dans le film
+        # On retire egalement les scenesDuScript qui sont deja dans le script
         for s in scenesPossibles:
-            if s in self.scenes:
+            if s in self.scenesDuScript:
                 scenesPossibles.remove(s)
                 
         rd.seed()
@@ -69,7 +67,7 @@ class Film():
     def creerFilmDepuisJSON(self, fichier_json, choixPremiereScene=None):
         print("Creation scenes")
         js.creerScenesDepuisJSON(fichier_json)
-        nbTour = 7
+        nbTour = 8
         if choixPremiereScene != None:
             print("On force la première scène")
             for s in Scene.scenesExistantes:
@@ -82,11 +80,11 @@ class Film():
         for loop in range(nbTour):
             print(loop)
             self.ajouterScene(self.tirerUneScene())
-        return self.scenes
+        return self.scenesDuScript
     
     def obtenirScript(self):
         script = "Début du script\n"
-        for s in self.scenes:
+        for s in self.scenesDuScript:
             script += s.idScene + " : " + s.urlTexte + "\n"
         return script
         
