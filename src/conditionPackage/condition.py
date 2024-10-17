@@ -4,16 +4,23 @@ from .valeurCondition import ValeurCondition
 
 # Classe abstraite
 class Condition:
+    """
+    Condition est une classe abstraite qui représente les conditions que peuvent posséder une SceneAvecCondition.
+    """
     valeurCondition = None
     
     @abstractmethod
     def __init__(self, valeurCondition):
+        """
+        Constructeur abstrait de la classe Condition.
+        """
         pass
     
-    # Retourne SUCCES si la scène est permise par la Condition, retourne ECHEC sinon
-    # Exemple : si la scene est imcompatible avec les conditions déjà existantes alors ECHEC
-    # Si la scene respecte toutes les conditions existantes et que les conditions de cette scène ne posent
-    # pas non plus de problème alors SUCCES
     @abstractmethod
     def verifierCondition(self, scene):
+        """
+        Méthode abstraite permettant de vérifier si la scene passée en argument vérifie la Condition.
+
+        Retourne un élément de l'énumération ValeurCondition (SUCCES ou ECHEC).
+        """
         pass
