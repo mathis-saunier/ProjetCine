@@ -7,7 +7,7 @@ class ConditionSceneSuivante(Condition):
     ConditionSceneSuivante est une Condition qui permet de définir les Scenes pouvant suivre la Scene actuelle.
 
     Attributs:
-        idScenesSuivantesPossibles: liste des id de Scenes pouvant suivre la scene actuelle
+        idScenesSuivantesPossibles (list[int]): liste des id de Scenes pouvant suivre la scene actuelle
     """
     idScenesSuivantesPossibles = []
     
@@ -16,7 +16,7 @@ class ConditionSceneSuivante(Condition):
         Constructeur de la classe ConditionSceneSuivante.
 
         Args:
-            idScenesSuivantesPossibles: liste des id de Scenes pouvant succéder à la Scene possédant cette ConditionSceneSuivante
+            idScenesSuivantesPossibles (list[int]): liste des id de Scenes pouvant succéder à la Scene possédant cette ConditionSceneSuivante
         """
         if (type(idScenesSuivantesPossibles) is list):
             self.idScenesSuivantesPossibles = idScenesSuivantesPossibles
@@ -28,7 +28,7 @@ class ConditionSceneSuivante(Condition):
         Méthode permettant de vérifier si la scene passée en argument vérifie la ConditionSceneSuivante.
 
         Args:
-            scene: Scene à vérifier
+            scene (Scene): Scene à vérifier
 
         Returns:
             ValeurCondition.SUCCES ou ValeurCondition.ECHEC
