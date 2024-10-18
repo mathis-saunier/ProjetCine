@@ -4,10 +4,10 @@ from scenePackage.scene import Scene
 
 class ConditionSceneSuivante(Condition):
     """
-    ConditionSceneSuivante est une Condition qui permet de définir les Scenes pouvant suivre la Scene actuelle.
+    ConditionSceneSuivante est une classe de Condition qui permet de définir les scènes pouvant suivre la scène actuelle.
 
     Attributs:
-        idScenesSuivantesPossibles (list[int]): liste des id de Scenes pouvant suivre la scene actuelle
+        idScenesSuivantesPossibles (list[int]): liste des id de scènes pouvant suivre la scène actuelle
     """
     idScenesSuivantesPossibles = []
     
@@ -16,7 +16,7 @@ class ConditionSceneSuivante(Condition):
         Constructeur de la classe ConditionSceneSuivante.
 
         Args:
-            idScenesSuivantesPossibles (list[int]): liste des id de Scenes pouvant succéder à la Scene possédant cette ConditionSceneSuivante
+            idScenesSuivantesPossibles (list[int]): liste des id de scènes pouvant succéder à la scène possédant cette ConditionSceneSuivante
         """
         if (type(idScenesSuivantesPossibles) is list):
             self.idScenesSuivantesPossibles = idScenesSuivantesPossibles
@@ -25,10 +25,10 @@ class ConditionSceneSuivante(Condition):
             
     def verifierCondition(self, scene):
         """
-        Méthode permettant de vérifier si la scene passée en argument vérifie la ConditionSceneSuivante.
+        Méthode permettant de vérifier si la scène passée en argument vérifie la ConditionSceneSuivante.
 
         Args:
-            scene (Scene): Scene à vérifier
+            scene (Scene): scène à vérifier
 
         Returns:
             ValeurCondition.SUCCES ou ValeurCondition.ECHEC
