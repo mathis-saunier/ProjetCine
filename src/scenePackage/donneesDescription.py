@@ -1,6 +1,6 @@
 class DonneesDescription:
     """
-    Classe qui permet de stocker les données de description d'une scène tels que le lieu où se déroule cette dernière, les personnages présents ...
+    Classe qui permet de stocker les données de description d'une scène telles que le lieu où se déroule cette dernière, les personnages présents ...
     
     Attributs:
         lieu (str): Le lieu où se déroule la scène
@@ -13,7 +13,7 @@ class DonneesDescription:
     
     def __init__(self, lieu, personnages, interieurExterieur):
         """
-        Constructeur de la classe DonneesDescription
+        Constructeur de la classe DonneesDescription.
         
         Args:
             lieu (str): Le lieu où se déroule la scène

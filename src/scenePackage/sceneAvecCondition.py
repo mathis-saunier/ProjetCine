@@ -3,7 +3,7 @@ from conditionPackage import ValeurCondition, ConditionSceneSuivante
 
 class SceneAvecCondition(Scene):
     """
-    Classe représentant une scène d'un film possédant des conditions.
+    Classe représentant une scène possédant des conditions.
     
     Attributs:
         conditions (list[Condition]): La liste des conditions de la scène

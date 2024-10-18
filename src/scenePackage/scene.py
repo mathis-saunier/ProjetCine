@@ -2,7 +2,7 @@
 
 class Scene:
     """
-    Classe représentant une scène d'un film.
+    Classe représentant une scène.
     
     Attributs:
         idScene (int): L'identifiant de la scène

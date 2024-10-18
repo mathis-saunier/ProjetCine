@@ -5,7 +5,7 @@ from .valeurCondition import ValeurCondition
 # Classe abstraite
 class Condition:
     """
-    Condition est une classe abstraite qui représente les conditions que peuvent posséder une scène.
+    Condition est une classe abstraite qui représente les conditions que peut posséder une scène.
     """
     valeurCondition = None
     
@@ -15,17 +15,17 @@ class Condition:
         Constructeur abstrait de la classe Condition.
 
         Args:
-            valeurCondition (ValeurCondition): valeur à retourner si la Condition est vérifiée
+            valeurCondition (ValeurCondition): valeur à retourner si la condition est vérifiée
         """
         pass
     
     @abstractmethod
     def verifierCondition(self, scene):
         """
-        Méthode abstraite permettant de vérifier si la scene passée en argument vérifie la Condition.
+        Méthode abstraite permettant de vérifier si la scene passée en argument vérifie la condition.
         Retourne un élément de l'énumération ValeurCondition (SUCCES ou ECHEC).
 
         Args:
-            scene (Scene): Scene à vérifier
+            scene (Scene): scène à vérifier
         """
         pass

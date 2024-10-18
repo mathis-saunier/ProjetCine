@@ -8,7 +8,7 @@ import jsonPackage as js
 
 class SceneInexistanteException(Exception):
     """
-    Exception levée lorsqu'une scène n'existe pas
+    Exception levée lorsqu'une scène n'existe pas.
     """
     def __init__(self, id):
         self.id = id
@@ -16,7 +16,7 @@ class SceneInexistanteException(Exception):
 
 class ZeroSceneRestanteException(Exception):
     """
-    Exception levée lorsqu'il n'y a plus de scènes restantes dans un acte pour une voie donnée
+    Exception levée lorsqu'il n'y a plus de scènes restantes dans un acte pour une voie donnée.
     """
     def __init__(self, acte, voie):
         self.acte = acte
@@ -25,7 +25,7 @@ class ZeroSceneRestanteException(Exception):
         
 class Film():
     """
-    Classe représentant un Film
+    Classe représentant un Film.
     
     Attributs:
         nomFilm (str): Le nom du film
@@ -45,7 +45,7 @@ class Film():
     # Ajouter le choix de la voieInitiale dans le __init__
     def __init__(self, nomFilm, voieInitiale):
         """
-        Constructeur de la classe Film
+        Constructeur de la classe Film.
 
         Args:
             nomFilm (str): Le nom du film
@@ -58,7 +58,7 @@ class Film():
     
     def ajouterScene(self, scene):
         """
-        Méthode permettant d'ajouter une scène au script
+        Méthode permettant d'ajouter une scène au script.
 
         Args:
             scene (Scene): La scène à ajouter au script
@@ -68,13 +68,13 @@ class Film():
     # Ne prendre pas en compte l'acte ou la voie actuel.le
     def recupererScenesPossibles(self, acte, voie):
         """
-        Méthode permettant de récupérer les scènes possibles pour un acte et une voie donnée
+        Méthode permettant de récupérer les scènes possibles pour un acte et une voie donnée.
 
-        ATTENTION: Cette méthode ne prend pas en compte l'acte ou la voie actuelle pour le moment
+        ATTENTION: Pour le moment, cette méthode ne prend pas en compte l'acte ou la voie passés en arguement.
 
         Args:
-            acteActuel (str): L'acte pour lequel on souhaite récupérer les scènes possibles
-            voieActuelle (str): La voie pour laquelle on souhaite récupérer les scènes possibles
+            acte (str): L'acte pour lequel on souhaite récupérer les scènes possibles
+            voie (str): La voie pour laquelle on souhaite récupérer les scènes possibles
 
         Returns:
             list[Scene]: La liste des scènes possibles
@@ -84,7 +84,7 @@ class Film():
         
     def recupererConditions(self):
         """
-        Méthode permettant de récupérer toutes les conditions des scènes du script
+        Méthode permettant de récupérer toutes les conditions des scènes du script.
 
         Returns:
             list[Condition]: La liste des conditions des scènes du script
@@ -97,7 +97,7 @@ class Film():
     
     def tirerUneScene(self):
         """
-        Méthode permettant de choisir aléatoirement une scène parmi les scènes possibles pour l'acte et la voie actuelle en vérifiant que la scène respecte toutes les conditions du script dans son état actuel
+        Méthode permettant de choisir aléatoirement une scène parmi les scènes possibles en vérifiant que la scène respecte toutes les conditions du script dans son état actuel.
 
         Returns:
             Scene: La scène choisie aléatoirement
@@ -129,14 +129,20 @@ class Film():
         
     def creerFilmDepuisJSON(self, fichier_json):
         """
-        Méthode permettant de créer un film à partir d'un fichier JSON
+        Méthode permettant de créer un film à partir d'un fichier JSON.
+
+        Args:
+            fichier_json (str): Le nom du fichier JSON (ex: "film.json")
         """
         self.scenesDuFilm = js.creerScenesDepuisJSON(fichier_json)
 
     # nombre de tour est une variable temporaire. Il y a mieux à faire comme fonctionnement
     def creerScript(self, choixPremiereScene=None):
         """
-        Méthode permettant de créer un script de film à partir des scènes de ce dernier
+        Méthode permettant de créer un script aléatoire à partir des scènes du film.
+
+        Args:
+            choixPremiereScene (str): L'identifiant de la première scène du script (optionnel)
 
         Returns:
             list[Scene]: La liste des scènes du script
@@ -161,7 +167,7 @@ class Film():
     
     def obtenirScript(self):
         """
-        Méthode permettant d'obtenir le script du film sous un format texte
+        Méthode permettant d'obtenir le script du film sous un format texte.
 
         Returns:
             str: Le script du film sous un format texte
@@ -174,7 +180,7 @@ class Film():
 
     def sceneDejaExistante(self, idScene):
         """
-        Méthode permettant de vérifier si une scène existe déjà dans le film
+        Méthode permettant de vérifier si une scène existe déjà dans le film.
 
         Args:
             idScene (str): L'identifiant de la scène à vérifier
@@ -189,16 +195,16 @@ class Film():
     
     def obtenirSceneParId(self, id):
         """
-        Méthode permettant de récupérer une scène par son identifiant
+        Méthode permettant de récupérer une scène par son identifiant.
         
         Args:
-            id (str): L'identifiant
+            id (str): Un identifiant de scène
 
         Returns:
             Scene: La scène correspondante à l'identifiant
 
         Raises:
-            SceneInexistanteException: Si la scène n'existe pas
+            SceneInexistanteException: Si l'indentifiant de la scène n'existe pas
         """
         for s in self.scenesDuFilm:
             if (s.idScene == id):
