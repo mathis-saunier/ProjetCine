@@ -5,7 +5,7 @@ from .valeurCondition import ValeurCondition
 # Classe abstraite
 class Condition:
     """
-    Condition est une classe abstraite qui représente les conditions que peuvent posséder une SceneAvecCondition.
+    Condition est une classe abstraite qui représente les conditions que peuvent posséder une scène.
     """
     valeurCondition = None
     
