@@ -7,9 +7,6 @@ class DonneesDescription:
         personnages (list[str]): La liste des personnages présents dans la scène
         interieurExterieur (str): Le type de lieu où se déroule la scène (intérieur ou extérieur)
     """
-    lieu = None
-    personnages = []
-    interieurExterieur = None
     
     def __init__(self, lieu, personnages, interieurExterieur):
         """

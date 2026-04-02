@@ -11,5 +11,6 @@ import jsonPackage as js
 with open("scriptsTest.txt", "w") as fichier:
             test = fi.Film("filmToto", 'A')
             for _ in range(1):
-                test.creerFilmDepuisJSON("exampleSansVoies.json", choixPremiereScene="1")
+                test.creerFilmDepuisJSON("exampleSansVoies.json")
+                test.scenesDuScript = test.creerScript()
                 fichier.write(test.obtenirScript() + "\n\n")

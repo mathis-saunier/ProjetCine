@@ -7,7 +7,6 @@ class Condition:
     """
     Condition est une classe abstraite qui représente les conditions que peut posséder une scène.
     """
-    valeurCondition = None
     
     @abstractmethod
     def __init__(self, valeurCondition):

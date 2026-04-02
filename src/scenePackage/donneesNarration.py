@@ -6,8 +6,6 @@ class DonneesNarration:
         voies (list[str]): La liste des voies possibles pour la scène
         actes (list[str]): La liste des actes possibles pour la scène
     """
-    voies = []
-    actes = []
     
     def __init__(self, voies, actes):
         """

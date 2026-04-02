@@ -5,7 +5,6 @@ class DonneesContenu:
     Attributs:
         urlTexte (str): L'url du texte associé à la scène
         ATTENTION, pour l'instant urlTexte représente le texte en lui-même"""
-    urlTexte = None
 
     def __init__(self, urlTexte):
         """

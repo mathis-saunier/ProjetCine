@@ -35,12 +35,6 @@ class Film():
         voieActuelle (str): La voie actuelle du film
         acteActuel (str): L'acte actuel du film
     """
-    nomFilm = None
-    scenesDuFilm = []
-    scenesDuScript = []
-    voieInitiale = None
-    voieActuelle = None
-    acteActuel = None
     
     # Ajouter le choix de la voieInitiale dans le __init__
     def __init__(self, nomFilm, voieInitiale):
@@ -52,6 +46,8 @@ class Film():
             voieInitiale (str): La voie initiale du film
         """
         self.nomFilm = nomFilm
+        self.scenesDuFilm = []
+        self.scenesDuScript = []
         self.voieInitiale = voieInitiale
         self.voieActuelle = voieInitiale
         self.acteActuel = "1"
@@ -174,7 +170,7 @@ class Film():
         """
         script = "Début du script\n"
         for s in self.scenesDuScript:
-            script += s.idScene + " : " + s.urlTexte + "\n"
+            script += s.idScene + " : " + s.contenuScene.urlTexte + "\n"
         return script
     
 

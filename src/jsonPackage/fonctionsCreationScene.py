@@ -44,7 +44,7 @@ def creerScenesDepuisJSON(fichier_json):
                 
                 info.update({"conditions": listeConditions})
                 # On cree la scene et on l'ajoute a notre liste qui sera retourner
-                scenesCreesDepuisJSON.append(SceneAvecCondition(**info))
+                scenesCreesDepuisJSON.append(SceneAvecCondition.depuisDonneesBrutes(**info))
                 
             return scenesCreesDepuisJSON
         

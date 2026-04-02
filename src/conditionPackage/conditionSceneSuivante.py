@@ -9,7 +9,6 @@ class ConditionSceneSuivante(Condition):
     Attributs:
         idScenesSuivantesPossibles (list[int]): liste des identifiants de scènes pouvant suivre la scène actuelle
     """
-    idScenesSuivantesPossibles = []
     
     def __init__(self, idScenesSuivantesPossibles):
         """

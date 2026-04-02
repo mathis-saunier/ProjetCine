@@ -1,4 +1,7 @@
 from .scene import Scene
+from .donneesContenu import DonneesContenu
+from .donneesDescription import DonneesDescription
+from .donneesNarration import DonneesNarration
 from conditionPackage import ValeurCondition, ConditionSceneSuivante
 
 class SceneAvecCondition(Scene):
@@ -8,46 +11,38 @@ class SceneAvecCondition(Scene):
     Attributs:
         conditions (list[Condition]): La liste des conditions de la scène
     """
-    conditions = []
     
-    def __init__(self, idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes, conditions):
+    def __init__(self, idScene, contenuScene, descriptionScene, narrationScene, conditions):
         """
         Constructeur de la classe SceneAvecCondition.
 
         Args:
             idScene (int): L'identifiant de la scène
-            lieu (str): Le lieu où se déroule la scène
-            personnages (list[str]): La liste des personnages présents dans la scène
-            interieurExterieur (str): Le type de lieu où se déroule la scène (intérieur ou extérieur)
-            urlTexte (str): L'url du texte de la scène
-            voies (list[str]): La liste des voies possibles pour la scène
-            actes (list[str]): La liste des actes possibles pour la scène
+            contenuScene (DonneesContenu): Les données de contenu de la scène
+            descriptionScene (DonneesDescription): Les données de description de la scène
+            narrationScene (DonneesNarration): Les données de narration de la scène
             conditions (list[Condition]): La liste des conditions de la scène
         """
-        super().__init__(idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes)
+        super().__init__(idScene, contenuScene, descriptionScene, narrationScene)
         self.conditions = conditions
         
     # Surchage du constructeur avec le décorateur @classethod
     @classmethod
-    def constructeurParDonnees(self, idScene, donneesDescription, donneesContenu, donneesNarration, conditions):
+    def depuisDonneesBrutes(cls, idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes, conditions):
         """
-        Second constructeur de la classe SceneCondition à partir d'instances de classes DonneesDescription, DonneesContenu et DonneesNarration.
+        Second constructeur de la classe SceneCondition à partir des infos brutes des classes DonneesDescription, DonneesContenu et DonneesNarration.
         
         Args:
             idScene (int): L'identifiant de la scène
-            donneesDescription (DonneesDescription): Les données de description de la scène
-            donneesContenu (DonneesContenu): Les données de contenu de la scène
-            donneesNarration (DonneesNarration): Les données de narration de la scène
+            lieu (str): Le lieu où se déroule la scène
+            personnages (list[str]): La liste des personnages présents dans la scène
+            interieurExterieur (str): Le type de lieu où se déroule la scène (intérieur ou extérieur)
+            urlTexte (str): L'url du texte associé à la scène
+            voies (list[str]): La liste des voies possibles pour la scène
+            actes (list[str]): La liste des actes possibles pour la scène
             conditions (list[Condition]): La liste des conditions de la scène
         """
-        return SceneAvecCondition(idScene,
-                                  donneesDescription.lieu,
-                                  donneesDescription.personnages,
-                                  donneesDescription.interieurExterieur,
-                                  donneesContenu.urlTexte,
-                                  donneesNarration.voies,
-                                  donneesNarration.actes,
-                                  conditions)
+        return cls(idScene, DonneesContenu(urlTexte), DonneesDescription(lieu, personnages, interieurExterieur), DonneesNarration(voies, actes), conditions)
         
     # Fonction __str__ déjà définie par héritage
     
