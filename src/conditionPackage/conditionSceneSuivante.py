@@ -17,10 +17,10 @@ class ConditionSceneSuivante(Condition):
         Args:
             idScenesSuivantesPossibles (list[int]): liste des identifiants de scènes pouvant succéder à la scène possédant la condition
         """
-        if (type(idScenesSuivantesPossibles) is list):
+        if (isinstance(idScenesSuivantesPossibles, list)):
             self.idScenesSuivantesPossibles = idScenesSuivantesPossibles
         else:
-            self.idScenesSuivantesPossibles.append(idScenesSuivantesPossibles)
+            self.idScenesSuivantesPossibles = [idScenesSuivantesPossibles]
             
     def verifierCondition(self, scene):
         """

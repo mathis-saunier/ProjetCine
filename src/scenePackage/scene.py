@@ -56,7 +56,7 @@ class Scene:
         return f"idScene : {self.idScene}"
 
     def __repr__(self):
-        return f"Scene({self.idScene}, '{self.lieu}', {str(self.personnages)}, {self.interieurExterieur}, '{self.urlTexte}', {str(self.voies)}, {str(self.actes)})"
+        return f"Scene({self.idScene}, {self.descriptionScene.lieu}, {self.descriptionScene.personnages}, {self.descriptionScene.interieurExterieur}, '{self.contenuScene.urlTexte}', {str(self.narrationScene.voies)}, {str(self.narrationScene.actes)})"
     
     def __eq__(self, other):
         return self.idScene == other.idScene
