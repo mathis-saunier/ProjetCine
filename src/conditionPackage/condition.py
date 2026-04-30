@@ -3,20 +3,10 @@ from abc import ABC, abstractmethod
 from .valeurCondition import ValeurCondition
 
 # Classe abstraite
-class Condition:
+class Condition(ABC):
     """
     Condition est une classe abstraite qui représente les conditions que peut posséder une scène.
     """
-    
-    @abstractmethod
-    def __init__(self, valeurCondition):
-        """
-        Constructeur abstrait de la classe Condition.
-
-        Args:
-            valeurCondition (ValeurCondition): valeur à retourner si la condition est vérifiée
-        """
-        pass
     
     @abstractmethod
     def verifierCondition(self, scene):
@@ -26,5 +16,18 @@ class Condition:
 
         Args:
             scene (Scene): scène à vérifier
+        """
+        pass
+    
+    @abstractmethod
+    def genererTransitions(self, sceneDepart):
+        """
+        Méthode abstraite permettant de générer les transitions possibles à partir de la scène de départ.
+        
+        Args:
+            sceneDepart (Scene): La scène de départ pour laquelle générer les transitions
+            
+        Returns:
+            list[Transition]: La liste des transitions générées par cette condition
         """
         pass

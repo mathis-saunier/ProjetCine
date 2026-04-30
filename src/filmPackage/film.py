@@ -4,6 +4,7 @@ import random as rd
 from scenePackage.scene import Scene
 from conditionPackage.condition import Condition
 from conditionPackage.valeurCondition import ValeurCondition
+from conditionPackage.transition import Transition
 import jsonPackage as js
 
 class SceneInexistanteException(Exception):
@@ -207,7 +208,48 @@ class Film():
                 return s
         # Si l'on a pas trouvé de scene on lève une exception
         raise SceneInexistanteException(id)
+    
+    def genererGraphe(self, nomFichier="graphe.dot"):
+        """
+        Génère un fichier GraphViz représentant le graphe de transitions entre les scènes du film.
+        Le graphe inclut toutes les transitions basées sur les conditions des scènes.
         
+        Args:
+            nomFichier (str): Le nom du fichier de sortie (défaut: "graphe.dot")
+            
+        Returns:
+            str: Le contenu du graphe au format DOT
+        """
+        # Début du graphe GraphViz
+        contenuGraphe = "digraph Film{\n"
+        contenuGraphe += f"    label=\"{self.nomFilm}\";\n"
+        contenuGraphe += "    node [shape=box, style=filled, fillcolor=lightblue];\n"
+        
+        # Ensemble pour éviter les doublons
+        transitionsAjoutees = set()
+        
+        # Parcourir toutes les scènes du film
+        for scene in self.scenesDuFilm:
+            # Vérifier si la scène a des conditions
+            if hasattr(scene, 'conditions') and scene.conditions:
+                # Générer les transitions pour chaque condition
+                for condition in scene.conditions:
+                    transitions = condition.genererTransitions(scene)
+                    for transition in transitions:
+                        # Créer une clé unique pour éviter les doublons
+                        cleTransition = (transition.depart, transition.arrivee, transition.nomCondition)
+                        if cleTransition not in transitionsAjoutees:
+                            contenuGraphe += "    " + transition.to_graphviz() + "\n"
+                            transitionsAjoutees.add(cleTransition)
+        
+        # Fin du graphe
+        contenuGraphe += "}\n"
+        
+        # Écrire dans le fichier
+        with open(nomFichier, 'w', encoding='utf-8') as f:
+            f.write(contenuGraphe)
+        
+        return contenuGraphe
         
         
         

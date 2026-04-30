@@ -1,5 +1,6 @@
 from .condition import Condition
 from .valeurCondition import ValeurCondition
+from .transition import Transition
 from scenePackage.scene import Scene
 
 class ConditionSceneSuivante(Condition):
@@ -38,3 +39,24 @@ class ConditionSceneSuivante(Condition):
             return ValeurCondition.SUCCES
         else:
             return ValeurCondition.ECHEC
+    
+    def genererTransitions(self, sceneDepart):
+        """
+        Génère les transitions correspondant aux scènes suivantes possibles.
+        
+        Args:
+            sceneDepart (Scene): La scène de départ
+            
+        Returns:
+            list[Transition]: Liste des transitions vers les scènes possibles
+        """
+        transitions = []
+        for idSceneSuivante in self.idScenesSuivantesPossibles:
+            transition = Transition(
+                depart=sceneDepart.idScene,
+                arrivee=idSceneSuivante,
+                nomCondition="ConditionSceneSuivante",
+                priorite=0
+            )
+            transitions.append(transition)
+        return transitions

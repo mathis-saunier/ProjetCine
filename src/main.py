@@ -101,6 +101,10 @@ class MainApplication:
                 test.creerScript(choixPremiereScene="1")
                 fichier.write(test.obtenirScript() + "\n\n")
         print(f"{num_scripts} scripts have been generated and saved in 'scripts.txt'.")
+        
+        # Generate and save the graph
+        test.genererGraphe("graphe_film.dot")
+        print("Graph has been generated and saved in 'graphe_film.dot'.")
 
     def on_closing(self):
         self.master.quit()  # Stop the mainloop
