@@ -8,7 +8,8 @@
                 "urlTexte": "IdScene 1 : Diane trouve un portefeuille par terre et lit l'adresse qui est marqu\u00e9e sur la carte d'identit\u00e9. Elle d\u00e9cide de s'y rendre car ce n'est pas loin d'o\u00f9 elle est. Arriv\u00e9e devant la porte, elle frappe \u00e0 la porte.",
                 "personnages": [],
                 "voies": [],
-                "actes": []
+                "actes": [],
+                "estDebut": true
             },
             "conditions": [
                 {
@@ -356,7 +357,8 @@
                 "urlTexte": "IdScene 19 : Diane se r\u00e9veille en prison.",
                 "personnages": [],
                 "voies": [],
-                "actes": []
+                "actes": [],
+                "estFin": true
             },
             "conditions": []
         }

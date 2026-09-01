@@ -28,7 +28,8 @@ class SceneAvecCondition(Scene):
         
     # Surchage du constructeur avec le décorateur @classethod
     @classmethod
-    def depuisDonneesBrutes(cls, idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes, conditions):
+    def depuisDonneesBrutes(cls, idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes, conditions,
+                            estDebut: bool = False, estFin: bool = False):
         """
         Second constructeur de la classe SceneCondition à partir des infos brutes des classes DonneesDescription, DonneesContenu et DonneesNarration.
         
@@ -41,8 +42,10 @@ class SceneAvecCondition(Scene):
             voies (list[str]): La liste des voies possibles pour la scène
             actes (list[str]): La liste des actes possibles pour la scène
             conditions (list[Condition]): La liste des conditions de la scène
+            estDebut (bool): Indique si la scène peut ouvrir un script (défaut: False)
+            estFin (bool): Indique si la scène peut clore un script (défaut: False)
         """
-        return cls(idScene, DonneesContenu(urlTexte), DonneesDescription(lieu, personnages, interieurExterieur), DonneesNarration(voies, actes), conditions)
+        return cls(idScene, DonneesContenu(urlTexte), DonneesDescription(lieu, personnages, interieurExterieur), DonneesNarration(voies, actes, estDebut, estFin), conditions)
         
     # Fonction __str__ déjà définie par héritage
     
@@ -50,6 +53,18 @@ class SceneAvecCondition(Scene):
         return f"SceneAvecCondition({self.idScene}, {self.descriptionScene.lieu}, {self.descriptionScene.personnages}, {self.descriptionScene.interieurExterieur}, '{self.contenuScene.urlTexte}', {str(self.narrationScene.voies)}, {str(self.narrationScene.actes)}, {str(self.conditions)})"
 
         
+    def possedeDesScenesSuivantes(self) -> bool:
+        """
+        Méthode indiquant si d'autres scènes peuvent succéder à celle-ci dans un script.
+
+        La réponse est déduite des transitions générées par les conditions de la scène,
+        ce qui évite au moteur de connaître les types concrets de conditions.
+
+        Returns:
+            bool: True si au moins une condition désigne une scène suivante, False sinon
+        """
+        return any(condition.genererTransitions(self) for condition in self.conditions)
+
     # Verifie que les conditions des scenes deja ajoutees ne
     # menent pas a un ECHEC
     def verifierToutesLesConditionsPrecedentes(self, film):

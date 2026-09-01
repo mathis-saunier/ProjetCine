@@ -102,9 +102,13 @@ class MainApplication:
             test.creerFilmDepuisJSON(json_filename)
             scripts = []
             for _ in range(num_scripts):
-                test.creerScript(choixPremiereScene="1")
+                # La premiere scene est tiree parmi celles que l'auteur a declarees comme debuts
+                test.creerScript()
                 scripts.append(test.obtenirScript())
-        except (js.ChargementJSONException, fi.ZeroSceneRestanteException) as erreur:
+        except (js.ChargementJSONException,
+                fi.AucuneSceneDeDebutException,
+                fi.SceneInexistanteException,
+                fi.ZeroSceneRestanteException) as erreur:
             messagebox.showerror("Error", str(erreur))
             return
 

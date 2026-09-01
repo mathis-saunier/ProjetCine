@@ -34,7 +34,8 @@ class Scene:
     # qui fera l'instanciation à ma place (ce sera ma "surchage de __init__")
     # Lien vers le site d'où vient la solution https://www.delftstack.com/fr/howto/python/overload-constructors-in-python/
     @classmethod
-    def depuisDonneesBrutes(cls, idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes):
+    def depuisDonneesBrutes(cls, idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes,
+                            estDebut: bool = False, estFin: bool = False):
         """
         Second constructeur de la classe Scene à partir des infos brutes des classes DonneesDescription, DonneesContenu et DonneesNarration.
         
@@ -46,10 +47,12 @@ class Scene:
             urlTexte (str): L'url du texte associé à la scène
             voies (list[str]): La liste des voies possibles pour la scène
             actes (list[str]): La liste des actes possibles pour la scène
+            estDebut (bool): Indique si la scène peut ouvrir un script (défaut: False)
+            estFin (bool): Indique si la scène peut clore un script (défaut: False)
         """
         descriptionScene = DonneesDescription(lieu, personnages, interieurExterieur)
         contenuScene = DonneesContenu(urlTexte)
-        narrationScene = DonneesNarration(voies, actes)
+        narrationScene = DonneesNarration(voies, actes, estDebut, estFin)
         return cls(idScene, contenuScene, descriptionScene, narrationScene)
 
     def __str__(self):
@@ -60,6 +63,17 @@ class Scene:
     
     def __eq__(self, other):
         return self.idScene == other.idScene
+
+    def possedeDesScenesSuivantes(self) -> bool:
+        """
+        Méthode indiquant si d'autres scènes peuvent succéder à celle-ci dans un script.
+
+        Une Scene sans condition ne désigne aucune scène suivante : elle ne mène nulle part.
+
+        Returns:
+            bool: True si la scène possède au moins une suite possible, False sinon
+        """
+        return False
         
     
     

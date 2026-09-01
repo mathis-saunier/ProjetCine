@@ -24,6 +24,14 @@ class ZeroSceneRestanteException(Exception):
         self.voie = voie
         super().__init__(f"Erreur, il n'y a pas de scènes restantes dans l'acte {acte} pour la voie {voie}")
         
+class AucuneSceneDeDebutException(Exception):
+    """
+    Exception levée lorsqu'aucune scène du film n'est déclarée comme scène de début.
+    """
+    def __init__(self, nomFilm):
+        self.nomFilm = nomFilm
+        super().__init__(f"Erreur, aucune scène du film {nomFilm} n'est déclarée comme scène de début")
+
 class Film():
     """
     Classe représentant un Film.
@@ -35,16 +43,18 @@ class Film():
         voieInitiale (str): La voie initiale du film
         voieActuelle (str): La voie actuelle du film
         acteActuel (str): L'acte actuel du film
+        probabiliteArretSurFin (float): Probabilité de clore le script lorsqu'une scène de fin possède encore des suites
     """
     
     # Ajouter le choix de la voieInitiale dans le __init__
-    def __init__(self, nomFilm, voieInitiale):
+    def __init__(self, nomFilm, voieInitiale, probabiliteArretSurFin: float = 0.5):
         """
         Constructeur de la classe Film.
 
         Args:
             nomFilm (str): Le nom du film
             voieInitiale (str): La voie initiale du film
+            probabiliteArretSurFin (float): Probabilité, entre 0 et 1, de clore le script lorsque la dernière scène est une fin possédant encore des suites (défaut: 0.5)
         """
         self.nomFilm = nomFilm
         self.scenesDuFilm = []
@@ -52,6 +62,7 @@ class Film():
         self.voieInitiale = voieInitiale
         self.voieActuelle = voieInitiale
         self.acteActuel = "1"
+        self.probabiliteArretSurFin = probabiliteArretSurFin
     
     def ajouterScene(self, scene):
         """
@@ -108,7 +119,6 @@ class Film():
         # d'une liste pendant qu'on l'itere en fait sauter certains.
         scenesPossibles = [s for s in scenesPossibles if s not in self.scenesDuScript]
 
-        rd.seed()
         while len(scenesPossibles) != 0:
             choix = rd.randrange(0, len(scenesPossibles))
             sceneChoisie = scenesPossibles[choix]
@@ -132,30 +142,71 @@ class Film():
         """
         self.scenesDuFilm = js.creerScenesDepuisJSON(fichier_json)
 
-    # nombre de tour est une variable temporaire. Il y a mieux à faire comme fonctionnement
+    def tirerUneSceneDeDebut(self):
+        """
+        Méthode permettant de choisir aléatoirement une scène parmi celles déclarées comme scènes de début.
+
+        Returns:
+            Scene: La scène de début choisie aléatoirement
+
+        Raises:
+            AucuneSceneDeDebutException: Si aucune scène du film n'est déclarée comme scène de début
+        """
+        scenesDeDebut = [s for s in self.scenesDuFilm if s.narrationScene.estDebut]
+        if not scenesDeDebut:
+            raise AucuneSceneDeDebutException(self.nomFilm)
+        return rd.choice(scenesDeDebut)
+
     def creerScript(self, choixPremiereScene=None):
         """
         Méthode permettant de créer un script aléatoire à partir des scènes du film.
 
+        Le script démarre sur une scène de début et s'arrête sur une scène de fin.
+        Lorsqu'une scène de fin possède encore des suites, la poursuite du récit est
+        tirée au sort selon probabiliteArretSurFin, ce qui donne des scripts de longueur variable.
+
         Args:
-            choixPremiereScene (str): L'identifiant de la première scène du script (optionnel)
+            choixPremiereScene (str): L'identifiant de la première scène du script (optionnel, une scène de début est tirée au sort sinon)
 
         Returns:
             list[Scene]: La liste des scènes du script
+
+        Raises:
+            AucuneSceneDeDebutException: Si aucune première scène n'est imposée et qu'aucune scène de début n'est déclarée
+            SceneInexistanteException: Si l'identifiant de première scène imposé n'existe pas
+            ZeroSceneRestanteException: Si le récit s'interrompt sur une scène qui n'est pas une fin
         """
         # On reinitialise tout potentiel ancien script
         self.scenesDuScript = []
-        
-        nbTour = 8
+
         if choixPremiereScene != None:
-            for s in self.scenesDuFilm:
-                if s.idScene == choixPremiereScene:
-                    self.ajouterScene(s)
-                    nbTour -= 1
-        # Faire une vérif que l'attribut scenes est bien vide
-        for loop in range(nbTour):
-            self.ajouterScene(self.tirerUneScene())
-        return self.scenesDuScript
+            self.ajouterScene(self.obtenirSceneParId(choixPremiereScene))
+        else:
+            self.ajouterScene(self.tirerUneSceneDeDebut())
+
+        # Le generateur aleatoire n'est pas reamorce ici : un appelant peut ainsi
+        # fixer une graine avec random.seed() pour rejouer une generation a l'identique.
+        while True:
+            derniereScene = self.scenesDuScript[-1]
+            estUneFin = derniereScene.narrationScene.estFin
+
+            if not derniereScene.possedeDesScenesSuivantes():
+                # Le recit ne peut pas continuer : c'est une fin si l'auteur l'a voulu,
+                # sinon le film est incomplet et il faut le signaler.
+                if estUneFin:
+                    return self.scenesDuScript
+                raise ZeroSceneRestanteException(self.acteActuel, self.voieActuelle)
+
+            if estUneFin and rd.random() < self.probabiliteArretSurFin:
+                return self.scenesDuScript
+
+            try:
+                self.ajouterScene(self.tirerUneScene())
+            except ZeroSceneRestanteException:
+                # Aucune des suites declarees n'est disponible : acceptable seulement sur une fin
+                if estUneFin:
+                    return self.scenesDuScript
+                raise
     
     def obtenirScript(self):
         """

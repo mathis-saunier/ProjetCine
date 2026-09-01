@@ -97,6 +97,7 @@ class MovieManager:
             self.entries[label] = tk.Entry(self.inner_frame, width=50)
             self.entries[label].pack(pady=5)
 
+        self.create_narration_flags()
         self.create_section("personnages")
         self.create_section("voies")
         self.create_section("actes")
@@ -110,6 +111,17 @@ class MovieManager:
 
         self.save_movie_button = tk.Button(button_frame, text="Save Movie", command=self.save_movie)
         self.save_movie_button.pack(side=tk.LEFT, padx=5)
+
+    def create_narration_flags(self):
+        flags_frame = tk.Frame(self.inner_frame)
+        flags_frame.pack(pady=10, fill=tk.X)
+
+        self.narration_flags = {}
+        for flag_name, flag_text in (("estDebut", "This scene can start a movie"),
+                                     ("estFin", "This scene can end a movie")):
+            variable = tk.BooleanVar(value=False)
+            tk.Checkbutton(flags_frame, text=flag_text, variable=variable).pack(anchor=tk.W)
+            self.narration_flags[flag_name] = variable
 
     def create_section(self, section_name):
         section_frame = tk.Frame(self.inner_frame)
@@ -251,6 +263,9 @@ class MovieManager:
             "actes": [entry.get() for entry in self.actes_entries]
         })
 
+        scene_data["info"].update({flag_name: variable.get()
+                                   for flag_name, variable in self.narration_flags.items()})
+
         for _, condition_var, idscene_entries, _ in self.condition_frames:
             if condition_var.get() != "Select Condition":
                 condition = {
@@ -268,6 +283,9 @@ class MovieManager:
     def clear_fields(self):
         for entry in self.entries.values():
             entry.delete(0, tk.END)
+
+        for variable in self.narration_flags.values():
+            variable.set(False)
         
         for section in ["personnages", "voies", "actes"]:
             section_frame = getattr(self, f"{section}_frame")

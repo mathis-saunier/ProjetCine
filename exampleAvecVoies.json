@@ -11,7 +11,8 @@
                     "B",
                     "A"
                 ],
-                "actes": []
+                "actes": [],
+                "estDebut": true
             },
             "conditions": [
                 {
@@ -399,7 +400,8 @@
                     "B",
                     "A"
                 ],
-                "actes": []
+                "actes": [],
+                "estFin": true
             },
             "conditions": []
         }
