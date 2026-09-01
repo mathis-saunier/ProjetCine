@@ -47,7 +47,7 @@ class SceneAvecCondition(Scene):
     # Fonction __str__ déjà définie par héritage
     
     def __repr__(self):
-        return f"Scene({self.idScene}, '{self.lieu}', {str(self.personnages)}, {self.interieurExterieur}, '{self.urlTexte}', {str(self.voies)}, {str(self.actes)}, {str(self.conditions)})"
+        return f"SceneAvecCondition({self.idScene}, {self.descriptionScene.lieu}, {self.descriptionScene.personnages}, {self.descriptionScene.interieurExterieur}, '{self.contenuScene.urlTexte}', {str(self.narrationScene.voies)}, {str(self.narrationScene.actes)}, {str(self.conditions)})"
 
         
     # Verifie que les conditions des scenes deja ajoutees ne

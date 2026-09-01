@@ -103,26 +103,22 @@ class Film():
             ZeroSceneRestanteException: Si il n'y a plus de scènes disponibles pour le tirage aléatoire. Les raisons peuvent être qu'aucune scène ne vérifie les conditions ou que toutes les scènes possibles ont déjà été choisies
         """
         scenesPossibles = self.recupererScenesPossibles(self.acteActuel, self.voieActuelle)
-        # On retire egalement les scenesDuScript qui sont deja dans le script
-        for s in scenesPossibles:
-            if s in self.scenesDuScript:
-                scenesPossibles.remove(s)
-                
+        # On retire egalement les scenesDuScript qui sont deja dans le script.
+        # Filtrer par comprehension et non par remove() successifs : retirer des elements
+        # d'une liste pendant qu'on l'itere en fait sauter certains.
+        scenesPossibles = [s for s in scenesPossibles if s not in self.scenesDuScript]
+
         rd.seed()
         while len(scenesPossibles) != 0:
             choix = rd.randrange(0, len(scenesPossibles))
             sceneChoisie = scenesPossibles[choix]
-            print(f"Scene choisie avant condition : {sceneChoisie}")
             # Maintenant que l'on a une scene possible, on vérifie qu'elle respecte les conditions
             if (sceneChoisie.verifierToutesLesConditionsPrecedentes(self) == ValeurCondition.SUCCES):
-                print("On choisit cette scene")
                 return sceneChoisie
             else:
-                scenesPossibles.remove(sceneChoisie)
-                print("On ne choisit pas cette scene")
-                   
-        if (len(scenesPossibles) == 0):
-            raise ZeroSceneRestanteException(self.acteActuel, self.voieActuelle)
+                scenesPossibles.pop(choix)
+
+        raise ZeroSceneRestanteException(self.acteActuel, self.voieActuelle)
         
     def creerFilmDepuisJSON(self, fichier_json):
         """
@@ -130,6 +126,9 @@ class Film():
 
         Args:
             fichier_json (str): Le nom du fichier JSON (ex: "film.json")
+
+        Raises:
+            ChargementJSONException: Si le fichier est introuvable, mal formé ou si son contenu ne respecte pas le format attendu
         """
         self.scenesDuFilm = js.creerScenesDepuisJSON(fichier_json)
 
@@ -149,16 +148,12 @@ class Film():
         
         nbTour = 8
         if choixPremiereScene != None:
-            print("On force la première scène")
             for s in self.scenesDuFilm:
                 if s.idScene == choixPremiereScene:
                     self.ajouterScene(s)
                     nbTour -= 1
-                    print(s)
-        print("Debut creation film")
         # Faire une vérif que l'attribut scenes est bien vide
         for loop in range(nbTour):
-            print(loop)
             self.ajouterScene(self.tirerUneScene())
         return self.scenesDuScript
     

@@ -1,3 +1,3 @@
-from .film import Film
+from .film import Film, SceneInexistanteException, ZeroSceneRestanteException
 
-__all__ = ['Film']
+__all__ = ['Film', 'SceneInexistanteException', 'ZeroSceneRestanteException']

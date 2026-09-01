@@ -2,13 +2,14 @@
 # On faire ajouter du typage de variable dans les déclarations : https://docs.python.org/fr/3.10/library/typing.html
 from copy import deepcopy
 import tkinter as tk
-from tkinter import simpledialog
+from tkinter import messagebox, simpledialog
 
 import scenePackage as sc
 import planPackage as pl
 import filmPackage as fi
 import conditionPackage as co
 import jsonPackage as js
+from jsonPackage.interfaceCreationScene import MovieManager
 
 # def initialisationScene(numScene):
 #     idScene = numScene
@@ -75,7 +76,7 @@ class MainApplication:
     def launch_movie_manager(self):
         self.master.withdraw()  # Hide the main window
         movie_manager_window = tk.Toplevel(self.master)
-        movie_manager = js.MovieManager(movie_manager_window)
+        movie_manager = MovieManager(movie_manager_window)
         movie_manager_window.protocol("WM_DELETE_WINDOW", lambda: self.on_movie_manager_close(movie_manager_window))
 
     def on_movie_manager_close(self, window):
@@ -94,17 +95,29 @@ class MainApplication:
             print("No text was entered.")
 
     def create_scripts(self, json_filename, num_scripts):
-        with open("scripts.txt", "w") as fichier:
-            test = fi.Film("filmToto", 'A')
+        test = fi.Film("filmToto", 'A')
+        # Les scripts sont generes avant d'ouvrir le fichier : en cas d'echec,
+        # scripts.txt conserve son contenu precedent au lieu d'etre vide.
+        try:
+            test.creerFilmDepuisJSON(json_filename)
+            scripts = []
             for _ in range(num_scripts):
-                test.creerFilmDepuisJSON(json_filename)
                 test.creerScript(choixPremiereScene="1")
-                fichier.write(test.obtenirScript() + "\n\n")
-        print(f"{num_scripts} scripts have been generated and saved in 'scripts.txt'.")
-        
+                scripts.append(test.obtenirScript())
+        except (js.ChargementJSONException, fi.ZeroSceneRestanteException) as erreur:
+            messagebox.showerror("Error", str(erreur))
+            return
+
+        with open("scripts.txt", "w", encoding="utf-8") as fichier:
+            for script in scripts:
+                fichier.write(script + "\n\n")
+
         # Generate and save the graph
         test.genererGraphe("graphe_film.dot")
-        print("Graph has been generated and saved in 'graphe_film.dot'.")
+        messagebox.showinfo(
+            "Success",
+            f"{num_scripts} scripts have been saved in 'scripts.txt'.\n"
+            "The graph has been saved in 'graphe_film.dot'.")
 
     def on_closing(self):
         self.master.quit()  # Stop the mainloop
