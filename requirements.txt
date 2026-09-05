@@ -1,0 +1,18 @@
+# ProjetCine n'installe aucun paquet PyPI : le métier et les tests
+# n'utilisent que la bibliothèque standard (json, random, copy, enum,
+# abc, os, sys, tempfile, unittest).
+#
+# Prérequis :
+#   - Python 3.10 ou plus récent (le parseur JSON utilise match/case)
+#   - tkinter pour l'interface graphique, fourni par le paquet système
+#     et non par pip :
+#         sudo apt install python3-tk
+#
+# Lancer l'application depuis src/ :
+#     python3 src/main.py
+# Lancer les tests depuis la racine du dépôt :
+#     python3 -m unittest discover -s tests -p 'test*.py'
+#
+# GraphViz (outil externe, optionnel) permet de visualiser les fichiers
+# .dot produits par Film.genererGraphe, mais n'est pas une dépendance
+# Python.
