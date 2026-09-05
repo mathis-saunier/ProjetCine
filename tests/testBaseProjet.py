@@ -167,6 +167,11 @@ class TestGenerationScript(unittest.TestCase):
         with tempfile.TemporaryDirectory() as dossier:
             graphe = self.film.genererGraphe(os.path.join(dossier, "graphe.dot"))
         self.assertNotIn('"19" -> "19"', graphe)
+        script = self.film.creerScript(choixPremiereScene="1")
+        identifiants = [s.idScene for s in script]
+        superpose = self.film.donneesGrapheSuperpose(identifiants)
+        self.assertTrue(any(n["surbrillance"] and n["id"] == "1" for n in superpose["noeuds"]))
+        self.assertGreaterEqual(len(self.film.donneesGrapheTirage(identifiants)["aretes"]), 1)
 
 
 class TestFinDeRecit(unittest.TestCase):
@@ -266,6 +271,19 @@ class TestFinDeRecit(unittest.TestCase):
         scene = creerScenesDepuisJSON(chemin)[0]
         self.assertFalse(scene.narrationScene.estDebut)
         self.assertFalse(scene.narrationScene.estFin)
+        self.assertEqual(scene.contenuScene.resume, "")
+
+    def testLeResumeEstPorteParLeGraphe(self):
+        """
+        Vérifie qu'un résumé saisi dans le JSON est recopié sur le nœud du graphe,
+        pour l'infobulle au survol.
+        """
+        film = self.filmDepuisScenes([
+            decrireScene("A", [], estDebut=True, estFin=True),
+        ])
+        film.scenesDuFilm[0].contenuScene.resume = "Diane frappe à la porte"
+        noeud = film.donneesGrapheComplet()["noeuds"][0]
+        self.assertEqual(noeud["resume"], "Diane frappe à la porte")
 
     def testUneSceneSansConditionNeMeneNullePart(self):
         """

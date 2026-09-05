@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block titre %}Films — ProjetCine{% endblock %}
+{% block contenu %}
+<section class="carte">
+    <h1>Films</h1>
+    <p>Choisissez un film d'exemple ou créez le vôtre. Les exemples sont en lecture seule : dupliquez-les pour les modifier.</p>
+    <ul class="liste-films">
+        {% for film in films %}
+        <li>
+            <strong>{{ film.titre }}</strong>
+            {% if film.estModifiable %}
+                <span class="badge">modifiable</span>
+            {% else %}
+                <span class="badge badge-exemple">exemple</span>
+            {% endif %}
+            <span class="actions">
+                <a href="/films/{{ film.idFilm }}/generer">Générer</a>
+                <a href="/films/{{ film.idFilm }}/editer">Éditer</a>
+            </span>
+        </li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="carte">
+    <h2>Nouveau film</h2>
+    <form method="post" action="/films" class="formulaire-ligne">
+        <label for="idFilm">Identifiant</label>
+        <input id="idFilm" name="idFilm" required
+               pattern="[A-Za-z0-9_-]+"
+               placeholder="monFilm"
+               title="Lettres, chiffres, tirets et underscores uniquement">
+        <button type="submit">Créer</button>
+    </form>
+</section>
+{% endblock %}

@@ -31,14 +31,14 @@ Une scène sans suite et **non** marquée `estFin` est une erreur de rédaction,
 ### 1.2 Langage et exécution
 
 - **Python 3.10+** obligatoire (le code utilise `match`/`case` dans `jsonPackage`).
-- **Aucune dépendance externe** : bibliothèque standard uniquement (`json`, `random`, `copy`,
-  `enum`, `abc`) + `tkinter` pour l'interface. Toute nouvelle dépendance doit être justifiée
-  explicitement et s'accompagner d'un `requirements.txt` (qui n'existe pas encore).
-- **Framework** : aucun. Ni web, ni ORM. L'IHM est en **Tkinter**, les tests en `unittest`.
-- Point d'entrée : `src/main.py` (`python src/main.py`, exécuté depuis `src/` car les imports
-  entre packages sont absolus : `import scenePackage as sc`). Tkinter doit être installé
-  (`sudo apt install python3-tk`) : sans lui l'IHM ne démarre pas, mais le métier et les tests
-  fonctionnent quand même.
+- **Dépendances** : le métier reste en bibliothèque standard (`json`, `random`, `copy`,
+  `enum`, `abc`). L'IHM web ajoute FastAPI, Uvicorn, Jinja2 et python-multipart
+  (`requirements.txt`). Toute nouvelle dépendance doit être justifiée explicitement.
+- **Framework** : FastAPI pour la présentation HTTP uniquement. Pas d'ORM.
+  Les tests métier restent en `unittest`.
+- Point d'entrée : `src/main.py` (`python src/main.py` depuis `src/`, ou
+  `PYTHONPATH=src uvicorn webPackage.applicationWeb:app`). Les imports entre
+  packages métier sont absolus (`import scenePackage as sc`).
 - **Tests** : `python3 -m unittest discover -s tests -p 'test*.py'`, depuis la racine du dépôt.
   À lancer après toute modification du métier.
 - **Documentation** : Doxygen (`Doxyfile` à la racine, `INPUT = ./src`, `OUTPUT_DIRECTORY = ./docs`,
@@ -93,15 +93,15 @@ prime : ne pas « corriger » massivement le style, ne pas renommer en `snake_ca
 
 ### 1.4 Style architectural
 
-Architecture **orientée objet en couches, par packages métier**, sans framework :
+Architecture **orientée objet en couches, par packages métier** :
 
 ```
 src/
-├── main.py               Point d'entrée + fenêtre Tkinter principale (couche présentation)
+├── main.py               Point d'entrée : lance Uvicorn
 ├── scenePackage/         Modèle de scène
 │   ├── scene.py                  Scene : agrégat de 3 objets de données
 │   ├── donneesDescription.py     lieu, personnages, interieurExterieur
-│   ├── donneesContenu.py         urlTexte (contient le texte, pas encore une URL)
+│   ├── donneesContenu.py         urlTexte (contient le texte, pas encore une URL), resume
 │   ├── donneesNarration.py       voies, actes, estDebut, estFin
 │   └── sceneAvecCondition.py     Scene + conditions (héritage)
 ├── conditionPackage/     Règles narratives
@@ -110,12 +110,14 @@ src/
 │   ├── valeurCondition.py        Enum SUCCES / ECHEC
 │   └── transition.py             Arête du graphe + export DOT
 ├── filmPackage/film.py   Orchestrateur : tirage aléatoire, création du script, export graphe
-├── jsonPackage/          Persistance JSON + IHM Tkinter de saisie des scènes
-│   ├── fonctionsCreationScene.py Lecture du JSON + ChargementJSONException
-│   └── interfaceCreationScene.py IHM Tkinter (jamais importée par le métier)
+├── jsonPackage/          Persistance JSON (sans IHM)
+│   └── fonctionsCreationScene.py Lecture du JSON + ChargementJSONException
+├── webPackage/           Présentation HTTP (FastAPI + gabarits HTML)
+│   ├── applicationWeb.py         Factory FastAPI et routes
+│   └── serviceFilm.py            Accès aux films et génération, sans HTTP
 └── planPackage/          Réservé aux plans (vide)
 
-tests/testBaseProjet.py   Tests de non-régression (unittest, sans Tkinter)
+tests/                    Tests de non-régression (unittest)
 ```
 
 Principes structurants à respecter :
@@ -132,14 +134,14 @@ Principes structurants à respecter :
    passer par `Scene.possedeDesScenesSuivantes()`, qui s'appuie sur `genererTransitions`.
 4. **Le format JSON est le contrat de persistance.** Toute nouvelle condition doit être
    sérialisable et ajoutée au `match condition["type"]` de `jsonPackage/fonctionsCreationScene.py`,
-   au sélecteur de l'IHM, et illustrée dans `exampleAvecVoies.json` / `exampleSansVoies.json` :
+   au sélecteur de l'éditeur web, et illustrée dans `exampleAvecVoies.json` / `exampleSansVoies.json` :
 
    ```json
    {
      "scenes": [
        {
          "info": { "idScene": "1", "lieu": "", "interieurExterieur": "",
-                   "urlTexte": "…", "personnages": [], "voies": ["A"], "actes": [],
+                   "urlTexte": "…", "resume": "", "personnages": [], "voies": ["A"], "actes": [],
                    "estDebut": true, "estFin": false },
          "conditions": [ { "type": "conditionSceneSuivante",
                            "idScenesSuivantesPossibles": ["2", "3"] } ]
@@ -151,10 +153,10 @@ Principes structurants à respecter :
    Les clés de `info` correspondent exactement aux paramètres de
    `SceneAvecCondition.depuisDonneesBrutes` (appelée via `**info`) : renommer un paramètre
    casse tous les fichiers JSON existants. Ajouter un paramètre **avec valeur par défaut**
-   préserve en revanche la lecture des fichiers antérieurs, comme pour `estDebut` et `estFin`.
+   préserve en revanche la lecture des fichiers antérieurs, comme pour `estDebut`, `estFin`
+   et `resume`.
 5. **Séparation présentation / métier** : `filmPackage`, `scenePackage` et `conditionPackage`
-   ne doivent contenir aucun appel Tkinter. Tkinter reste cantonné à `main.py` et
-   `jsonPackage/interfaceCreationScene.py`.
+   ne doivent contenir aucun appel FastAPI ni Tkinter. HTTP reste cantonné à `webPackage`.
 6. **Identifiants de scène : des chaînes** (`"1"`, `"2"`), y compris quand les docstrings
    annoncent `int` — la comparaison se fait sur `str`. Ne pas convertir sans traiter tout le flux.
 
@@ -168,9 +170,6 @@ Principes structurants à respecter :
 - `Scene.__eq__` est défini sans `__hash__` et sans garde sur le type de `other`.
 - `src/test.py` est un script exécuté à l'import, et non un test ; il échoue. Les vrais tests
   sont dans `tests/`.
-- `main.py` conserve une trentaine de lignes d'ancien code commenté.
-- L'IHM est en anglais alors que le domaine est en français, et ses identifiants sont en
-  `snake_case`. Y conserver l'anglais tant qu'elle n'est pas reprise dans son ensemble.
 - Le métier utilise encore quelques `print` ; il n'y a pas de `logging`.
 
 **Défauts déjà corrigés** — ne pas les réintroduire, ils sont couverts par `tests/` : fuite de
@@ -245,7 +244,7 @@ touché, en respectant à la lettre les conventions de la section 1.3.
 4. Ajoute des annotations de type sur le code que tu écris.
 5. Si tu ajoutes une condition : hérite de `Condition`, implémente `verifierCondition` **et**
    `genererTransitions`, enregistre le type dans le `match` de `fonctionsCreationScene.py`,
-   ajoute-la à la combobox de `interfaceCreationScene.py`, et complète un fichier d'exemple JSON.
+   ajoute-la au sélecteur de l'éditeur web (`static/editeur.js`), et complète un fichier d'exemple JSON.
 6. Lance `python3 -m unittest discover -s tests -p 'test*.py'` depuis la racine, et complète
    `tests/testBaseProjet.py` dès que tu corriges un bug ou ajoutes un comportement. Préfère un
    test déterministe (en fixant `probabiliteArretSurFin` ou une graine) à un test statistique.
@@ -265,7 +264,7 @@ touché, en respectant à la lettre les conventions de la section 1.3.
   contrainte ou une intention que le code ne peut pas montrer.
 - Ne modifie pas la structure des clés JSON de `info` sans traiter les fichiers d'exemple
   et l'IHM dans le même changement.
-- Le code métier n'importe jamais `tkinter`.
+- Le code métier n'importe jamais `tkinter` ni FastAPI.
 
 ---
 
@@ -285,7 +284,7 @@ utile à un étudiant qui apprend la conception objet.
    comparaison `str` contre `int` sur un `idScene`, `__eq__` sans `__hash__`.
 2. **Respect du modèle objet** — La nouvelle condition passe-t-elle bien par l'abstraction
    `Condition` ? Y a-t-il un `isinstance` sur un type concret qui trahit un défaut de
-   polymorphisme ? Le métier est-il resté indépendant de Tkinter ?
+   polymorphisme ? Le métier est-il resté indépendant de FastAPI et de Tkinter ?
 3. **Cohérence du contrat JSON** — Les clés de `info` correspondent-elles toujours à la signature
    de `depuisDonneesBrutes` ? Les fichiers d'exemple et l'IHM ont-ils suivi ? Les JSON existants
    se chargent-ils encore ? Un nouveau champ a-t-il bien une valeur par défaut ?

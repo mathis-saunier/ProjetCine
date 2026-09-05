@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block titre %}Éditer {{ idFilm }} — ProjetCine{% endblock %}
+{% block contenu %}
+<section class="carte">
+    <p class="fil"><a href="/">Films</a> · {{ idFilm }}</p>
+    <div class="entete-editeur">
+        <h1>Éditer le film</h1>
+        <p class="actions-entete">
+            <a href="/films/{{ idFilm }}/generer">Générer des scripts</a>
+            {% if estModifiable %}
+            <button type="button" id="enregistrer" class="principal">Enregistrer</button>
+            {% endif %}
+        </p>
+    </div>
+
+    {% if not estModifiable %}
+    <p class="avertissement">Cet exemple est en lecture seule. Dupliquez-le pour l'éditer.</p>
+    <form method="post" action="/films/{{ idFilm }}/dupliquer" class="formulaire-ligne">
+        <label for="idFilmCible">Nouvel identifiant</label>
+        <input id="idFilmCible" name="idFilmCible" required pattern="[A-Za-z0-9_-]+" placeholder="maCopie">
+        <button type="submit">Dupliquer</button>
+    </form>
+    {% endif %}
+
+    <p id="message" class="message" hidden></p>
+
+    <nav class="menu-scenes" aria-label="Scènes du film">
+        <p class="menu-titre">Scènes</p>
+        <div id="onglets-scenes" class="onglets-scenes"></div>
+        {% if estModifiable %}
+        <button type="button" id="ajouter-scene" class="bouton-plus">+ Nouvelle scène</button>
+        {% endif %}
+    </nav>
+
+    <div id="scene-courante"></div>
+</section>
+
+<section class="carte">
+    <h2>Graphe du film</h2>
+    <p class="legende">Mis à jour à chaque modification · Vert : début · Corail : fin</p>
+    <div id="graphe-editeur" class="graphe-image"></div>
+</section>
+
+<script type="application/json" id="donnees-film">{{ document | tojson }}</script>
+<script>
+    window.PROJETCINE = {
+        idFilm: {{ idFilm | tojson }},
+        estModifiable: {{ estModifiable | tojson }}
+    };
+</script>
+<script src="/static/graphe.js"></script>
+<script src="/static/editeur.js"></script>
+{% endblock %}

@@ -71,6 +71,23 @@ def creerScenesDepuisJSON(fichier_json: str) -> list[SceneAvecCondition]:
     except json.JSONDecodeError as e:
         raise ChargementJSONException(fichier_json, "le fichier n'est pas un JSON valide") from e
 
+    return creerScenesDepuisDonnees(data, fichier_json)
+
+
+def creerScenesDepuisDonnees(data: dict, origine: str = "document") -> list[SceneAvecCondition]:
+    """
+    Fonction permettant de créer les scènes d'un film à partir d'un document JSON déjà chargé.
+
+    Args:
+        data (dict): Le document JSON décrivant le film (clé 'scenes')
+        origine (str): Nom utilisé dans les messages d'erreur (fichier ou identifiant)
+
+    Returns:
+        list[SceneAvecCondition]: La liste des scènes créées à partir du document
+
+    Raises:
+        ChargementJSONException: Si le contenu ne respecte pas le format attendu
+    """
     try:
         scenes = data.get("scenes", [])
         if not isinstance(scenes, list):
@@ -90,14 +107,13 @@ def creerScenesDepuisJSON(fichier_json: str) -> list[SceneAvecCondition]:
             if not isinstance(conditions, list):
                 raise ValueError("Le bloc 'conditions' doit être une liste.")
 
-            # On pourra utiliser **info pour créer une Scene, il manque juste les conditions
-            # dont on s'occupe maintenant. La liste est propre à cette scène : la réutiliser
-            # d'une scène à l'autre ferait hériter une scène sans condition de celles de la précédente.
-            info.update({"conditions": creerConditionsDepuisJSON(conditions)})
-            # On cree la scene et on l'ajoute a notre liste qui sera retournee
-            scenesCreesDepuisJSON.append(SceneAvecCondition.depuisDonneesBrutes(**info))
+            # Copie de info : y ajouter 'conditions' ne doit pas muter le document d'origine,
+            # dont le contrat JSON sépare info et conditions.
+            infoPourScene = dict(info)
+            infoPourScene["conditions"] = creerConditionsDepuisJSON(conditions)
+            scenesCreesDepuisJSON.append(SceneAvecCondition.depuisDonneesBrutes(**infoPourScene))
 
         return scenesCreesDepuisJSON
 
     except (ValueError, KeyError, TypeError) as e:
-        raise ChargementJSONException(fichier_json, f"format invalide ({e})") from e
+        raise ChargementJSONException(origine, f"format invalide ({e})") from e

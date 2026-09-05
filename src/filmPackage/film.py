@@ -142,6 +142,15 @@ class Film():
         """
         self.scenesDuFilm = js.creerScenesDepuisJSON(fichier_json)
 
+    def chargerScenes(self, scenes: list) -> None:
+        """
+        Méthode permettant d'associer au film une liste de scènes déjà instanciées.
+
+        Args:
+            scenes (list[Scene]): Les scènes qui constituent le film
+        """
+        self.scenesDuFilm = list(scenes)
+
     def tirerUneSceneDeDebut(self):
         """
         Méthode permettant de choisir aléatoirement une scène parmi celles déclarées comme scènes de début.
@@ -255,6 +264,250 @@ class Film():
         # Si l'on a pas trouvé de scene on lève une exception
         raise SceneInexistanteException(id)
     
+    def _identifiantDot(self, idScene) -> str:
+        """
+        Protège un identifiant de scène pour le format DOT.
+
+        Args:
+            idScene: L'identifiant brut de la scène
+
+        Returns:
+            str: L'identifiant entre guillemets, échappé
+        """
+        texte = str(idScene).replace("\\", "\\\\").replace('"', '\\"')
+        return f'"{texte}"'
+
+    def _couleurNoeud(self, scene) -> str:
+        """
+        Choisit la couleur d'un nœud selon son rôle narratif.
+
+        Args:
+            scene (Scene): La scène à colorer
+
+        Returns:
+            str: Une couleur GraphViz
+        """
+        debut = scene.narrationScene.estDebut
+        fin = scene.narrationScene.estFin
+        if debut and fin:
+            return "gold"
+        if debut:
+            return "palegreen"
+        if fin:
+            return "lightcoral"
+        return "lightblue"
+
+    def _transitionsDuFilm(self) -> list:
+        """
+        Recense les transitions du film, sans doublon.
+
+        Returns:
+            list[Transition]: Les arêtes dérivées des conditions
+        """
+        transitionsAjoutees = []
+        cles = set()
+        for scene in self.scenesDuFilm:
+            if not hasattr(scene, "conditions") or not scene.conditions:
+                continue
+            for condition in scene.conditions:
+                for transition in condition.genererTransitions(scene):
+                    cle = (transition.depart, transition.arrivee, transition.nomCondition)
+                    if cle not in cles:
+                        cles.add(cle)
+                        transitionsAjoutees.append(transition)
+        return transitionsAjoutees
+
+    def _donneesNoeud(self, scene, couleur: str, surbrillance: bool) -> dict:
+        """
+        Construit la description d'un nœud de graphe, y compris son résumé.
+
+        Args:
+            scene (Scene): La scène représentée
+            couleur (str): La couleur de remplissage
+            surbrillance (bool): Indique si le nœud appartient au tirage
+
+        Returns:
+            dict: id, couleur, surbrillance, resume
+        """
+        resume = ""
+        if hasattr(scene, "contenuScene") and scene.contenuScene.resume:
+            resume = scene.contenuScene.resume
+        return {
+            "id": scene.idScene,
+            "couleur": couleur,
+            "surbrillance": surbrillance,
+            "resume": resume,
+        }
+
+    def _sceneParIdOuAucune(self, idScene):
+        """
+        Retrouve une scène du film, ou None si elle n'existe pas.
+
+        Args:
+            idScene: L'identifiant recherché
+
+        Returns:
+            Scene | None: La scène, si elle existe
+        """
+        for scene in self.scenesDuFilm:
+            if scene.idScene == idScene:
+                return scene
+        return None
+
+    def donneesGrapheComplet(self) -> dict:
+        """
+        Décrit le graphe de toutes les possibilités, prêt à être dessiné en SVG.
+
+        Returns:
+            dict: {noeuds: list[dict], aretes: list[dict]}
+        """
+        noeuds = [
+            self._donneesNoeud(scene, self._couleurNoeud(scene), False)
+            for scene in self.scenesDuFilm
+        ]
+        aretes = [
+            {"depart": t.depart, "arrivee": t.arrivee, "surbrillance": False}
+            for t in self._transitionsDuFilm()
+        ]
+        return {"noeuds": noeuds, "aretes": aretes}
+
+    def donneesGrapheTirage(self, identifiants: list) -> dict:
+        """
+        Décrit le graphe d'un script tiré.
+
+        Args:
+            identifiants (list[str]): Les identifiants des scènes du script, dans l'ordre
+
+        Returns:
+            dict: {noeuds: list[dict], aretes: list[dict]}
+        """
+        noeuds = []
+        for identifiant in identifiants:
+            scene = self._sceneParIdOuAucune(identifiant)
+            if scene is None:
+                noeuds.append({"id": identifiant, "couleur": "gold",
+                               "surbrillance": True, "resume": ""})
+            else:
+                noeuds.append(self._donneesNoeud(scene, "gold", True))
+        aretes = [{"depart": a, "arrivee": b, "surbrillance": True}
+                  for a, b in zip(identifiants, identifiants[1:])]
+        return {"noeuds": noeuds, "aretes": aretes}
+
+    def donneesGrapheSuperpose(self, identifiants: list) -> dict:
+        """
+        Décrit le graphe complet avec le tirage mis en évidence.
+
+        Args:
+            identifiants (list[str]): Les identifiants des scènes du script, dans l'ordre
+
+        Returns:
+            dict: {noeuds: list[dict], aretes: list[dict]}
+        """
+        aretesDuTirage = set(zip(identifiants, identifiants[1:]))
+        noeudsDuTirage = set(identifiants)
+        noeuds = []
+        for scene in self.scenesDuFilm:
+            surbrillance = scene.idScene in noeudsDuTirage
+            couleur = "gold" if surbrillance else self._couleurNoeud(scene)
+            noeuds.append(self._donneesNoeud(scene, couleur, surbrillance))
+        aretes = []
+        for transition in self._transitionsDuFilm():
+            surbrillance = (transition.depart, transition.arrivee) in aretesDuTirage
+            aretes.append({
+                "depart": transition.depart,
+                "arrivee": transition.arrivee,
+                "surbrillance": surbrillance,
+            })
+        return {"noeuds": noeuds, "aretes": aretes}
+
+    def contenuGrapheComplet(self) -> str:
+        """
+        Construit le graphe de toutes les transitions possibles, sans écrire de fichier.
+
+        Returns:
+            str: Le graphe au format DOT
+        """
+        lignes = [
+            "digraph Film {",
+            '    bgcolor="white";',
+            f'    label="{self.nomFilm} — toutes les possibilités";',
+            '    node [shape=box, style=filled, fontname="Helvetica"];',
+            '    edge [fontname="Helvetica"];',
+        ]
+        for scene in self.scenesDuFilm:
+            lignes.append(
+                f"    {self._identifiantDot(scene.idScene)} "
+                f'[fillcolor={self._couleurNoeud(scene)}];'
+            )
+        for transition in self._transitionsDuFilm():
+            lignes.append("    " + transition.to_graphviz())
+        lignes.append("}\n")
+        return "\n".join(lignes)
+
+    def contenuGrapheTirage(self, identifiants: list) -> str:
+        """
+        Construit le graphe d'un script, c'est-à-dire la seule chaîne tirée.
+
+        Args:
+            identifiants (list[str]): Les identifiants des scènes du script, dans l'ordre
+
+        Returns:
+            str: Le graphe au format DOT
+        """
+        lignes = [
+            "digraph Tirage {",
+            '    bgcolor="white";',
+            f'    label="{self.nomFilm} — tirage";',
+            '    node [shape=box, style=filled, fillcolor=gold, fontname="Helvetica"];',
+            '    edge [color="#b8860b", penwidth=2.5, fontname="Helvetica"];',
+        ]
+        for identifiant in identifiants:
+            lignes.append(f"    {self._identifiantDot(identifiant)};")
+        for depart, arrivee in zip(identifiants, identifiants[1:]):
+            lignes.append(
+                f"    {self._identifiantDot(depart)} -> {self._identifiantDot(arrivee)};"
+            )
+        lignes.append("}\n")
+        return "\n".join(lignes)
+
+    def contenuGrapheSuperpose(self, identifiants: list) -> str:
+        """
+        Superpose le chemin d'un script sur le graphe de toutes les possibilités.
+
+        Args:
+            identifiants (list[str]): Les identifiants des scènes du script, dans l'ordre
+
+        Returns:
+            str: Le graphe au format DOT
+        """
+        aretesDuTirage = set(zip(identifiants, identifiants[1:]))
+        noeudsDuTirage = set(identifiants)
+        lignes = [
+            "digraph Superpose {",
+            '    bgcolor="white";',
+            f'    label="{self.nomFilm} — possibilités et tirage";',
+            '    node [shape=box, style=filled, fontname="Helvetica"];',
+            '    edge [fontname="Helvetica"];',
+        ]
+        for scene in self.scenesDuFilm:
+            couleur = "gold" if scene.idScene in noeudsDuTirage else self._couleurNoeud(scene)
+            epaisseur = ' penwidth=2.2' if scene.idScene in noeudsDuTirage else ""
+            lignes.append(
+                f"    {self._identifiantDot(scene.idScene)} "
+                f"[fillcolor={couleur}{epaisseur}];"
+            )
+        for transition in self._transitionsDuFilm():
+            if (transition.depart, transition.arrivee) in aretesDuTirage:
+                extra = ' [color="#b8860b", penwidth=3.2]'
+            else:
+                extra = ' [color="#888888"]'
+            lignes.append(
+                f"    {self._identifiantDot(transition.depart)} -> "
+                f"{self._identifiantDot(transition.arrivee)}{extra};"
+            )
+        lignes.append("}\n")
+        return "\n".join(lignes)
+
     def genererGraphe(self, nomFichier="graphe.dot"):
         """
         Génère un fichier GraphViz représentant le graphe de transitions entre les scènes du film.
@@ -266,35 +519,9 @@ class Film():
         Returns:
             str: Le contenu du graphe au format DOT
         """
-        # Début du graphe GraphViz
-        contenuGraphe = "digraph Film{\n"
-        contenuGraphe += f"    label=\"{self.nomFilm}\";\n"
-        contenuGraphe += "    node [shape=box, style=filled, fillcolor=lightblue];\n"
-        
-        # Ensemble pour éviter les doublons
-        transitionsAjoutees = set()
-        
-        # Parcourir toutes les scènes du film
-        for scene in self.scenesDuFilm:
-            # Vérifier si la scène a des conditions
-            if hasattr(scene, 'conditions') and scene.conditions:
-                # Générer les transitions pour chaque condition
-                for condition in scene.conditions:
-                    transitions = condition.genererTransitions(scene)
-                    for transition in transitions:
-                        # Créer une clé unique pour éviter les doublons
-                        cleTransition = (transition.depart, transition.arrivee, transition.nomCondition)
-                        if cleTransition not in transitionsAjoutees:
-                            contenuGraphe += "    " + transition.to_graphviz() + "\n"
-                            transitionsAjoutees.add(cleTransition)
-        
-        # Fin du graphe
-        contenuGraphe += "}\n"
-        
-        # Écrire dans le fichier
+        contenuGraphe = self.contenuGrapheComplet()
         with open(nomFichier, 'w', encoding='utf-8') as f:
             f.write(contenuGraphe)
-        
         return contenuGraphe
         
         

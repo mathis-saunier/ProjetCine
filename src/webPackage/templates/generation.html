@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block titre %}Générer {{ idFilm }} — ProjetCine{% endblock %}
+{% block contenu %}
+<section class="carte">
+    <p class="fil"><a href="/">Films</a> · {{ idFilm }}</p>
+    <h1>Générer des scripts</h1>
+    <p><a href="/films/{{ idFilm }}/editer">Éditer les scènes</a></p>
+    <form method="post" action="/films/{{ idFilm }}/generer" class="formulaire-ligne">
+        <label for="nombre">Nombre de scripts</label>
+        <input id="nombre" name="nombre" type="number" min="1" max="20" value="{{ nombre|default(1) }}" required>
+        <label for="graine">Graine (optionnel)</label>
+        <input id="graine" name="graine" type="text" inputmode="numeric" value="{{ graine|default('') }}" placeholder="ex. 42">
+        <button type="submit">Tirer</button>
+    </form>
+    {% if erreur %}
+    <p class="erreur" role="alert">{{ erreur }}</p>
+    {% endif %}
+</section>
+
+{% if scripts %}
+<section class="carte">
+    <h2>Scripts</h2>
+    {% for script in scripts %}
+    <article class="script">
+        <h3>Script {{ loop.index }}</h3>
+        <pre>{{ script.texte }}</pre>
+    </article>
+    {% endfor %}
+</section>
+
+<section class="carte">
+    <h2>Graphes</h2>
+    <p class="legende">Vert : début · Corail : fin · Or : scènes du tirage</p>
+    <div class="onglets" role="tablist">
+        <button type="button" class="onglet" data-vue="complet">Toutes les possibilités</button>
+        <button type="button" class="onglet" data-vue="tirage">Tirage</button>
+        <button type="button" class="onglet actif" data-vue="superpose">Superposés</button>
+    </div>
+    {% if scripts|length > 1 %}
+    <label class="choix-script">
+        Script affiché
+        <select id="choix-script">
+            {% for script in scripts %}
+            <option value="{{ loop.index0 }}">Script {{ loop.index }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    {% endif %}
+    <div id="graphe" class="graphe-image" aria-live="polite"></div>
+    <script type="application/json" id="donnees-graphes">{{
+        {
+            "complet": grapheComplet,
+            "scripts": scripts
+        } | tojson
+    }}</script>
+    <script src="/static/graphe.js"></script>
+</section>
+{% endif %}
+{% endblock %}

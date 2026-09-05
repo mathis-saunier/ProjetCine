@@ -29,7 +29,7 @@ class SceneAvecCondition(Scene):
     # Surchage du constructeur avec le décorateur @classethod
     @classmethod
     def depuisDonneesBrutes(cls, idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes, conditions,
-                            estDebut: bool = False, estFin: bool = False):
+                            estDebut: bool = False, estFin: bool = False, resume: str = ""):
         """
         Second constructeur de la classe SceneCondition à partir des infos brutes des classes DonneesDescription, DonneesContenu et DonneesNarration.
         
@@ -44,8 +44,9 @@ class SceneAvecCondition(Scene):
             conditions (list[Condition]): La liste des conditions de la scène
             estDebut (bool): Indique si la scène peut ouvrir un script (défaut: False)
             estFin (bool): Indique si la scène peut clore un script (défaut: False)
+            resume (str): Un résumé court affiché au survol du graphe (défaut: chaîne vide)
         """
-        return cls(idScene, DonneesContenu(urlTexte), DonneesDescription(lieu, personnages, interieurExterieur), DonneesNarration(voies, actes, estDebut, estFin), conditions)
+        return cls(idScene, DonneesContenu(urlTexte, resume), DonneesDescription(lieu, personnages, interieurExterieur), DonneesNarration(voies, actes, estDebut, estFin), conditions)
         
     # Fonction __str__ déjà définie par héritage
     

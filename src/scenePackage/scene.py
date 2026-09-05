@@ -35,7 +35,7 @@ class Scene:
     # Lien vers le site d'où vient la solution https://www.delftstack.com/fr/howto/python/overload-constructors-in-python/
     @classmethod
     def depuisDonneesBrutes(cls, idScene, lieu, personnages, interieurExterieur, urlTexte, voies, actes,
-                            estDebut: bool = False, estFin: bool = False):
+                            estDebut: bool = False, estFin: bool = False, resume: str = ""):
         """
         Second constructeur de la classe Scene à partir des infos brutes des classes DonneesDescription, DonneesContenu et DonneesNarration.
         
@@ -49,9 +49,10 @@ class Scene:
             actes (list[str]): La liste des actes possibles pour la scène
             estDebut (bool): Indique si la scène peut ouvrir un script (défaut: False)
             estFin (bool): Indique si la scène peut clore un script (défaut: False)
+            resume (str): Un résumé court affiché au survol du graphe (défaut: chaîne vide)
         """
         descriptionScene = DonneesDescription(lieu, personnages, interieurExterieur)
-        contenuScene = DonneesContenu(urlTexte)
+        contenuScene = DonneesContenu(urlTexte, resume)
         narrationScene = DonneesNarration(voies, actes, estDebut, estFin)
         return cls(idScene, contenuScene, descriptionScene, narrationScene)
 
