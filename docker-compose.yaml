@@ -4,17 +4,13 @@ services:
     container_name: projetcine
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8013:8013"
     volumes:
       - ./data:/app/data
     environment:
       PROJETCINE_DATA: /app/data
-    # Si Nginx Proxy Manager tourne sur le même hôte Docker,
-    # pointez un proxy-host vers projetcine:8000 après avoir
-    # rattaché ce service à son réseau, par exemple :
-    # networks:
-    #   - npm
-# networks:
-#   npm:
-#     external: true
-#     name: nginx-proxy-manager_default
+    networks:
+      - nginx-proxy-manager_default
+networks:
+  nginx-proxy-manager_default:
+    external: true
